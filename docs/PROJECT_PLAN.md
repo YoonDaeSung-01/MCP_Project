@@ -1,7 +1,7 @@
 # Project Plan
 
 개정일: 2026-10-05
-상태: R0 순서 3(Page 및 Task 저장, Revision, Session 저장과 Backup) 완료. 순서 4(Pyodide 별도 Origin 실행 영역 검증) 대기.
+상태: R0 순서 4(Pyodide 별도 Origin 실행 영역 검증) 완료. 순서 5(Gemini Adapter와 공통 Harness 연결) 대기.
 
 이 문서는 Project의 목적, 우선순위, Release 범위와 구현 순서를 관리한다.
 기능 계약은 [PRD](./PRD.md)를 따른다.

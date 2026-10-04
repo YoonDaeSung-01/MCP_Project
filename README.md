@@ -13,9 +13,9 @@ Job Agent는 공고의 근거와 사용자가 명시한 경험을 연결한다.
 해당 기능은 설계 상태이며 아직 App에서 사용할 수 없다.
 세부 동작은 [PRD의 FR-22 및 FR-23](./docs/PRD.md#fr-22-공개-github-project-연결과-이해)을 따른다.
 
-상태: 2026-10-05 R0의 순서 3(Page 및 Task 저장, Revision 충돌 검증, Session/Turn 저장, Backup & Restore)을 완료했다.
-SQLite 데이터베이스(WAL, foreign_keys, migration), Page/Task/Session Service, Optimistic Concurrency Control(409 Conflict), request_id 멱등성 및 원자적 Online Backup & Restore API를 구현하고 96개 테스트를 통과했다.
-다음 작업은 R0 순서 4인 Pyodide의 별도 Origin 실행 영역 검증이다.
+상태: 2026-10-05 R0의 순서 4(Pyodide의 별도 Origin 실행 영역 검증)를 완료했다.
+별도 Origin(127.0.0.1:5174)의 iframe과 Pyodide Web Worker 격리, 3초 타임아웃 강제 중단 및 복구, 64 KiB 출력 제한, 사용자 출력/Test Case 분리 및 Cross-Origin 접근 차단을 구현하고 Playwright 6개 E2E 테스트를 통과했다.
+다음 작업은 R0 순서 5인 Gemini Adapter와 공통 Harness 연결이다.
 문서 Diagram의 생성은 App 구현과 별도로 관리한다.
 
 ## 문서 진입점

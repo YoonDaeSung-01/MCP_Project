@@ -393,3 +393,12 @@ HTTPX의 AsyncClient, Streaming과 Timeout 계약도 공식 문서로 확인했�
 httpx는 기존 Backend 의존성이며 이번 작업에서 새 Package를 설치하지 않았다.
 이번 변경은 요구사항과 설계 반영이다.
 실제 GitHub 연결, Model 설명과 Browser 학습 흐름의 검증은 해당 기능 구현 단계에 남아 있다.
+
+문서 검증에서는 기존 Renderer Directory를 전달해 node scripts/render_docs.mjs를 실행했다.
+네 SVG와 manifest.json을 다시 생성했다.
+PowerShell에서 Node 검사로 수정한 Markdown 7개의 BOM 없는 UTF-8을 확인했다.
+Project 안의 Link 38개, FR 23개와 UF 17개의 정의 및 참조를 확인했다.
+네 Diagram의 Source Hash, Source 줄 위치와 SVG Hash를 확인했다.
+문서 검사에서 오류는 없었다.
+git diff --check도 실행했다.
+이 검증은 App의 pytest 및 Playwright 실행과 구분한다.

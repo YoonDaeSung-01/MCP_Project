@@ -2,7 +2,7 @@
 
 개정일: 2026-10-05
 공식 API 근거 확인일: 기존 선택은 2026-10-04. GitHub 및 HTTPX 계약은 2026-10-05.
-상태: 기술 선택과 논리 계약 확정. R0 순서 1을 완료했다. GitHub 연결은 설계이며 실행 검증 전이다.
+상태: 기술 선택과 논리 계약 확정. 현재 구현 단계는 Project Plan을 따른다. GitHub 연결은 설계이며 실행 검증 전이다.
 
 이 문서는 기술 Stack, Module, 저장, API와 AI 실행 계약을 관리한다.
 Release 범위는 [Project Plan](./PROJECT_PLAN.md)을 따른다.
@@ -771,13 +771,14 @@ Learning Agent는 준비한 근거로 구조 설명과 학습 및 면접 피드�
 
 1. GET /repos/{owner}/{repo}로 Repository ID, visibility와 기본 Branch를 확인한다.
 2. GET /repos/{owner}/{repo}/commits/{ref}로 commit_sha와 tree_sha를 고정한다.
-3. GET /repos/{owner}/{repo}/git/trees/{tree_sha}로 File 목록을 읽는다.
+3. GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1로 File 목록을 읽는다.
 4. 읽기 계획은 README, 의존성 정의, 진입점, 핵심 Module, Test와 실행 설정을 우선한다.
 5. Tree에서 확인한 blob_sha만 GET /repos/{owner}/{repo}/git/blobs/{blob_sha}로 읽는다.
 6. 허용한 Text 본문과 줄 위치, 제외 이유 및 실제 읽기 결과를 Snapshot에 저장한다.
 
 recursive Tree의 truncated=true와 App의 목록 제한은 불완전한 범위로 표시한다.
 사용자는 관심 Directory를 좁혀 같은 Commit의 하위 Tree를 추가로 읽을 수 있다.
+하위 Tree 조회도 처음 고정한 tree_sha에서 확인한 Tree 식별자만 사용한다.
 목록의 존재와 해당 File 본문의 읽기 성공을 구분한다.
 Binary, 생성물, 의존성 Directory, 비밀 설정 File과 크기 제한 초과 File은 제외한다.
 제외 Pattern과 우선 읽기 Pattern은 공통 설정에서 관리한다.
