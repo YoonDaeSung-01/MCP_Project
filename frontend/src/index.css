@@ -1,18 +1,93 @@
+/* ==========================================================================
+   Design System & Global Tokens
+   기준: docs/DESIGN.md (Linear / Cursor / LeetCode / Perplexity BP 기반)
+   ========================================================================== */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* ================= 1. Background Surfaces (Dark Mode 기본) ================= */
+  --bg-app: #08090a;             /* 앱 최하단 캔버스 배경 (Near Black) */
+  --bg-surface: #101114;         /* 사이드바, 헤더, 기본 패널 서피스 */
+  --bg-surface-raised: #18191d;  /* 카드, 입력창, 드롭다운 서피스 */
+  --bg-surface-hover: #222329;   /* 리스트 아이템 호버, 액티브 서피스 */
+  --bg-surface-active: #2a2b33;  /* 선택된 탭, 프레스 상태 */
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #1e1e24;
+  /* ================= 2. Hairline Borders (초미세 반투명 테두리) ================= */
+  --border-hairline: rgba(255, 255, 255, 0.07);  /* 기본 1px 구획 분할선 */
+  --border-subtle: rgba(255, 255, 255, 0.12);    /* 카드, 패널 기본 보더 */
+  --border-strong: rgba(255, 255, 255, 0.20);    /* 입력창 호버, 구분 강조 */
+  --border-focus: #5e6ad2;                       /* 포커스 링 (Linear Indigo) */
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* ================= 3. Typography Inks (가독성 계층) ================= */
+  --text-primary: #f2f3f5;       /* 핵심 헤딩, 본문 텍스트 (높은 명도) */
+  --text-secondary: #9ea2aa;     /* 설명문, 부제목, 메타데이터 */
+  --text-muted: #62656d;         /* 비활성 텍스트, 단축키 힌트, 플레이스홀더 */
+  --text-inverse: #08090a;       /* 밝은 배경 위의 반전 텍스트 */
+
+  /* ================= 4. Brand & AI Accents (Electric Indigo) ================= */
+  --accent-primary: #5e6ad2;     /* Linear 시그니처 인디고-바이올렛 */
+  --accent-primary-hover: #6e7be4;
+  --accent-primary-subtle: rgba(94, 106, 210, 0.12);
+  --accent-primary-glow: rgba(94, 106, 210, 0.25);
+
+  /* ================= 5. Semantic Status Inks (피드백 컬러) ================= */
+  --status-success: #10b981;     /* Test Case 통과 (Emerald) */
+  --status-success-subtle: rgba(16, 185, 129, 0.12);
+  --status-error: #f43f5e;       /* Test Case 실패, 실행 오류, 타임아웃 (Rose) */
+  --status-error-subtle: rgba(244, 63, 94, 0.12);
+  --status-warning: #f59e0b;     /* 변경 충돌, 출력 절삭 안내 (Amber) */
+  --status-warning-subtle: rgba(245, 158, 11, 0.12);
+  --status-info: #0ea5e9;        /* 소스 참조, 시스템 안내 (Sky) */
+  --status-info-subtle: rgba(14, 165, 233, 0.12);
+
+  /* ================= 6. Geometry & Radii ================= */
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* ================= 7. Fonts ================= */
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
 }
 
+[data-theme="light"] {
+  /* ================= Light Theme (1:1 대응) ================= */
+  --bg-app: #f7f8f9;
+  --bg-surface: #ffffff;
+  --bg-surface-raised: #f0f2f5;
+  --bg-surface-hover: #e5e8ec;
+  --bg-surface-active: #d9dce2;
+
+  --border-hairline: rgba(0, 0, 0, 0.06);
+  --border-subtle: rgba(0, 0, 0, 0.10);
+  --border-strong: rgba(0, 0, 0, 0.18);
+  --border-focus: #5e6ad2;
+
+  --text-primary: #121316;
+  --text-secondary: #5a5d65;
+  --text-muted: #8c9098;
+  --text-inverse: #ffffff;
+
+  --accent-primary: #5e6ad2;
+  --accent-primary-hover: #4f5bc4;
+  --accent-primary-subtle: rgba(94, 106, 210, 0.08);
+  --accent-primary-glow: rgba(94, 106, 210, 0.18);
+
+  --status-success: #059669;
+  --status-success-subtle: rgba(5, 150, 105, 0.08);
+  --status-error: #e11d48;
+  --status-error-subtle: rgba(225, 29, 72, 0.08);
+  --status-warning: #d97706;
+  --status-warning-subtle: rgba(217, 119, 6, 0.08);
+  --status-info: #0284c7;
+  --status-info-subtle: rgba(2, 132, 199, 0.08);
+}
+
+/* ================= Reset & Base ================= */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -20,9 +95,16 @@
 }
 
 body {
-  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  background-color: var(--bg-app);
   min-width: 320px;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
@@ -30,4 +112,23 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* ================= Scrollbar ================= */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }

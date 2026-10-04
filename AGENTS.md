@@ -19,6 +19,7 @@ R0의 경계 검증 없이 R1 기능을 먼저 구현하지 않는다.
 | 기능, 사용자 제어, 완료 조건 | docs/PRD.md |
 | 기술 선택, Directory, Module, 저장 및 실행 계약 | docs/ARCHITECTURE.md |
 | 사용자 조작 순서 | docs/USER_FLOWS.md |
+| UI/UX 디자인 시스템, 레이아웃, 디자인 토큰 | docs/DESIGN.md |
 | 문서 및 답변 작성 규칙, Technical Name 정의 | docs/DOCUMENTATION_STYLE.md |
 | 판단 근거 | docs/PROJECT_REVIEW.md, docs/research |
 
@@ -33,7 +34,7 @@ Root의 README.md와 AGENTS.md는 진입 문서와 개발 규칙이다.
 
 ## 3. 문서 및 답변 작성
 
-전략, 구현 계획, 검토 기록, README, 사용자 답변을 작성할 때 docs/DOCUMENTATION_STYLE.md를 따른다.
+전략, 구현 계획, 검토 기록, README, 사용자 답변과 Code 주석을 작성할 때 docs/DOCUMENTATION_STYLE.md를 따른다.
 설명은 한국어로 쓴다.
 기술 용어와 English에서 온 표현은 English로 쓴다.
 Project Technical Name은 docs/DOCUMENTATION_STYLE.md §5의 정의에 맞춘다.
@@ -132,6 +133,15 @@ Backend의 저장, Revision, request_id, Source Version과 Tool 권한을 바꾸
 Browser 흐름을 바꾸면 해당 Playwright 흐름을 함께 작성하거나 갱신한다.
 Test 위치는 backend/tests와 frontend/tests다.
 실행하지 않은 Test를 통과했다고 보고하지 않는다.
+
+### 7.6 Code 주석과 설명
+
+Code를 작성하거나 수정할 때 읽기 쉽고 이해하기 쉽도록 설명 주석을 자세하게 작성한다.
+주석 작성은 docs/DOCUMENTATION_STYLE.md의 규칙을 따른다.
+설명은 한국어로 쓰고 기술 용어와 Code Identifier는 English로 쓴다.
+Module, Class, Function의 목적, Argument, Return 값과 예외 조건을 명시한다.
+복잡한 Logic, 분기 조건, 상태 변경 이유와 경계값 처리 의도를 상세히 설명한다.
+Code 동작을 단순히 반복하는 주석 대신 설계 의도와 판단 근거를 적는다.
 
 ## 8. 완료 보고
 
