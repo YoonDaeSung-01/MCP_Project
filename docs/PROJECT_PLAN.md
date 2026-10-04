@@ -1,7 +1,7 @@
 # Project Plan
 
 개정일: 2026-10-05
-상태: R0 순서 1(환경, Package, Lock File, Health Check 및 Build 검증) 완료. 순서 2(Wiki MCP 연결) 대기.
+상태: R0 순서 2(Wiki MCP의 Tool, Resource, Prompt와 Client 연결) 완료. 순서 3(Page 및 Task 저장, Revision, Session 저장과 Backup) 대기.
 
 이 문서는 Project의 목적, 우선순위, Release 범위와 구현 순서를 관리한다.
 기능 계약은 [PRD](./PRD.md)를 따른다.
@@ -20,6 +20,8 @@ App은 AI, Data, Backend, CS와 Algorithm 학습을 지원한다.
 하나의 Multi-turn Chat에서 학습, 메모, Task와 일정 관리를 요청한다.
 사용자는 같은 기능을 UI에서 직접 조작할 수 있다.
 채용준비에서는 공고의 요구사항과 공부할 내용을 연결한다.
+사용자는 공개 GitHub Repository를 연결해 Project의 구조와 핵심 Code를 공부한다.
+사용자는 같은 자료를 근거로 기술 면접을 준비한다.
 개발 과정에서는 MCP, Agent, Skill, Memory, Rules, Hook, Tool과 Harness를 익힌다.
 
 이 Project의 목표는 사용자의 실제 공부 흐름을 완성하는 것이다.
@@ -35,6 +37,7 @@ App은 AI, Data, Backend, CS와 Algorithm 학습을 지원한다.
 | Coding Test에서 막히면 완성 답안을 보기 쉽다 | 힌트와 관련 문법으로 직접 해결을 돕는다 | 사용자가 다음 점검과 구현을 직접 진행한다 |
 | 메모와 공부할 작업을 따로 관리한다 | Page와 Task를 학습 대상에 연결한다 | Task에서 해당 자료와 메모를 다시 연다 |
 | 작성 내용과 질문 Context를 잃을 수 있다 | 저장 상태와 이어서 하기를 제공한다 | App을 다시 열고 같은 내용을 사용한다 |
+| GitHub Project를 읽어도 구성과 실행 흐름을 연결하기 어렵다 | 구조 설명, 핵심 Code 읽기와 Project 기반 모의 면접을 제공한다 | 사용자가 근거 File을 열고 동작과 설계 판단을 직접 설명한다 |
 | MCP를 이론으로만 이해한다 | 실제 Tool, Resource와 Prompt를 사용한다 | 호출 결과와 Trace로 연결 경계를 설명한다 |
 
 답변 수, Agent 수와 화면 수를 성공 기준으로 사용하지 않는다.
@@ -58,6 +61,7 @@ App은 AI, Data, Backend, CS와 Algorithm 학습을 지원한다.
 | D-10 | Embedding 및 Hybrid Search는 후속 비교 실험으로 진행한다 | 핵심 기능 구현을 늦추지 않고 RAG를 익힌다 |
 | D-11 | 내부 Block 이동부터 구현하고 외부 Drop과 Widget Layout은 뒤에 구현한다 | 편집과 저장을 먼저 안정화한다 |
 | D-12 | 선택 기술과 설치 및 실행 검증을 구분한다 | 문서 작성만으로 사용 가능 상태를 주장하지 않는다 |
+| D-13 | 공개 GitHub Repository는 Commit을 고정해 읽기 전용으로 분석한다 | 설명의 근거를 유지하고 Project의 구현과 사용자 기여를 구분한다 |
 
 검색한 자료를 답변 Context에 넣는 Baseline도 넓은 의미의 RAG다.
 이 문서의 후속 RAG 실험은 Embedding과 Hybrid Search의 추가 효과를 비교하는 작업이다.
@@ -67,7 +71,7 @@ RAG Study Unit과 App의 검색 기능 실험은 별도 작업이다.
 
 1. 작성 내용 보존과 실제 자료 조회를 먼저 완성한다.
 2. 개념 학습, Python 기초 실습과 정답 없는 질문 흐름을 연결한다.
-3. 실제 사용에서 필요한 Calendar, Planner와 채용준비를 추가한다.
+3. GitHub Project 학습과 면접 준비, 필요한 Calendar, Planner와 채용준비를 추가한다.
 4. 외부 Drag and Drop과 Layout 조작을 추가한다.
 5. 안정된 Baseline을 기준으로 후속 RAG 실험을 수행한다.
 
@@ -87,7 +91,7 @@ FR ID의 세부 동작과 완료 조건은 PRD에 있다.
 |---|---|---|
 | R0: 기술 경계 검증 | Windows MCP 연결, SQLite 저장, BlockNote 복원, Pyodide 실행, Gemini Tool Calling과 Multi-turn 계약 | 경계별 실제 실행 결과와 설치 Version을 기록한다 |
 | R1: 학습 MVP | Wiki, Track 탐색, Page, Learning 및 Coding Chat, 기초 Python 실습, 기본 Task, 요청한 Web Search, 저장 및 복원 | 아래 R1 사용 흐름과 해당 PRD 완료 조건을 검증한다 |
-| R2: 개인 학습 관리 | Calendar, Planner, Job Agent, 공고 보관, 하위 Page와 목적별 Template, 필요한 추가 Study Unit | 사용자가 직접 관리하고 Chat에서 명확히 요청할 수 있다 |
+| R2: 개인 학습 관리 | 공개 GitHub Project 학습과 모의 면접, Calendar, Planner, Job Agent, 공고 보관, 하위 Page와 목적별 Template, 필요한 추가 Study Unit | Project 근거로 학습과 면접 연습을 진행하고 직접 기록 및 관리한다 |
 | R3: 작업 공간 조작 | 메뉴의 외부 Block Drop, Widget 이동 및 크기 변경, 저장 Layout, 통합 검색 | 세 종류의 Drag and Drop과 다시 열기를 함께 검증한다 |
 | E1: 후속 RAG 실험 | 같은 Wiki와 질문으로 Keyword, Embedding, Hybrid Search 비교 | 결과와 실패 사례를 기록하고 실제 적용 여부를 결정한다 |
 
@@ -113,7 +117,12 @@ React-Grid-Layout을 R1 완료 조건으로 사용하지 않는다.
 
 ### 후속 범위의 기준
 
-R2는 FR-14, FR-15, FR-16, FR-17을 연결한다.
+R2는 FR-14, FR-15, FR-16, FR-17, FR-22, FR-23을 연결한다.
+GitHub Project 학습은 URL 연결, 구조 설명, 핵심 Code 읽기와 모의 면접을 연결한다.
+첫 연결 범위는 github.com의 공개 Repository다.
+Learning Agent는 Project 이해와 기술 면접 연습을 담당한다.
+Job Agent는 사용자가 공고를 선택했을 때 요구사항과 확인한 경험을 연결한다.
+별도 Project Agent와 자동 Study Unit 생성은 추가하지 않는다.
 추가 Study Unit은 실제 공부할 주제로 작성한다.
 RAG와 Data Leakage는 후속 Study Unit의 후보로 유지한다.
 기존 Wiki 탐색과 질문은 R1부터 여러 분야에서 사용할 수 있다.
@@ -174,6 +183,9 @@ R0에서 확인한 계약 없이 큰 Framework를 추가하지 않는다.
 | 자동 학습 Track, 자동 진도 및 숙련도 판정 | 사용자 선택과 실제 학습 활동을 우선한다 |
 | 자동 Task와 반복 복습 일정 생성 | 사용자가 직접 요청하고 관리한다 |
 | 자동 지원, Mail 전송과 상시 공고 Monitoring | 요청한 공고 분석과 수동 준비를 제공한다 |
+| 비공개 Repository, GitHub Enterprise와 계정 OAuth 연결 | 첫 GitHub 연결은 공개 Repository부터 지원한다 |
+| GitHub Project의 실행, 의존성 설치, Code 수정과 자동 PR 작성 | Project의 정적 읽기와 사용자 학습을 제공한다 |
+| Repository 전체 Clone, 자동 Commit 추적과 Issue 및 PR 일괄 수집 | 선택한 Commit의 필요한 File만 읽는다 |
 | 여러 사용자의 Auth, 결제, Cloud 배포와 동시 편집 | 개인 Local App 범위를 유지한다 |
 | Agent별 Server, 별도 Memory Database와 범용 Plugin System | 공통 Harness와 명시한 Module로 구현한다 |
 | 초기 Vector Database, File Watcher와 자동 Vector Memory | Baseline을 먼저 만들고 검색을 후속 실험한다 |
@@ -189,12 +201,16 @@ R0에서 확인한 계약 없이 큰 Framework를 추가하지 않는다.
 | Provider와 SDK 계약이 바뀐다 | 공식 문서와 R0 실행으로 확인하고 Version을 고정한다 | Architecture |
 | Python Worker만으로 격리됐다고 가정한다 | 별도 Origin과 Message 검증을 함께 확인한다 | FR-09, NF-02 |
 | 검색 Index가 Wiki 수정과 달라진다 | File Version과 Refresh 상태를 표시한다 | FR-01, FR-02, FR-21 |
+| Project 일부를 읽고 전체를 이해했다고 답한다 | 읽은 File, 제외 범위와 미확인 실행 동작을 표시한다 | FR-22 |
+| Repository Code를 사용자 경험으로 바꾼다 | 학습한 내용과 사용자가 명시한 기여를 구분한다 | FR-16, FR-23 |
 | RAG가 항상 더 좋다고 가정한다 | 같은 조건의 Baseline과 비교하고 실패도 기록한다 | FR-21 |
 
 ## 10. 현재 상태와 문서 관리
 
-현재 Source Directory는 비어 있다.
-App Package 설정, Lock File, 시작 Script와 실제 App 기능은 아직 없다.
+R0 순서 1의 Backend 및 Frontend Skeleton, Package 설정과 Lock File을 갖췄다.
+현재 완료 범위와 다음 구현 순서는 이 문서의 상태 및 6절을 따른다.
+GitHub Project 학습과 모의 면접은 요구사항과 설계에 반영했다.
+해당 App 기능과 실제 GitHub 및 Model 연결은 아직 구현하거나 검증하지 않았다.
 문서 Diagram 생성 Script는 App 기능과 별도로 관리한다.
 기존 Wiki는 수정하거나 복제하지 않았다.
 선택 기술과 논리 계약은 구현 기준이며 실행 성공의 증거가 아니다.

@@ -1,6 +1,6 @@
 # PRD
 
-개정일: 2026-10-04
+개정일: 2026-10-05
 상태: 제품 요구사항 확정. 아래 완료 조건은 아직 실행 검증 결과가 아니다.
 
 이 문서는 기능, 사용자 제어, 제한과 완료 조건을 관리한다.
@@ -25,6 +25,8 @@ Release 범위는 [Project Plan](./PROJECT_PLAN.md)에서만 관리한다.
 | 내용을 직접 정리한다 | Block 기반 Page와 원문 참조 |
 | 공부할 작업과 시간을 관리한다 | 직접 수정하는 Task와 Calendar |
 | 채용공고를 보고 준비 방향을 정한다 | 공고 근거와 사용자가 명시한 경험의 비교 |
+| GitHub Project의 전체 구성을 이해하고 공부한다 | 근거 File을 연결한 구조 설명과 핵심 Code 읽기 |
+| 해당 Project로 면접을 준비한다 | 기술 질문, 답변 피드백과 사용자가 확인한 기여의 구분 |
 
 ## 2. 제품 원칙
 
@@ -53,6 +55,7 @@ MCP 설명 Study Unit은 실제 연결을 이해하는 작은 검증 예제로 �
 | Task | 작업과 선택적 마감 및 자료 연결 | 생성, 수정, 완료 취소, 보관, 복원 |
 | Calendar 및 Planner | 시간 배치와 공부 가능 시간 | Event와 설정의 직접 수정 |
 | Job | 공고 근거, 준비 후보와 수동 지원 상태 | 검색 요청, 보관, 분석, 상태 수정 |
+| Project 학습 | 연결한 Repository, 분석 범위, 구조 설명과 근거 Code | URL 연결, 분석 요청, 핵심 File 선택, 학습 및 모의 면접 |
 
 현재 제공 시점은 Project Plan을 따른다.
 제공 전 기능을 사용 가능 기능으로 표시하지 않는다.
@@ -114,6 +117,7 @@ Study Unit은 목표, 선행 개념, 자료, 활동과 확인 기준을 가진�
 ### FR-04. Learning Agent
 
 Learning Agent는 AI, Data, Backend와 일반 CS 개념을 설명한다.
+연결한 GitHub Project의 구조 설명과 기술 면접 연습은 FR-22와 FR-23을 따른다.
 사용자가 선택한 수준과 질문 목적에 맞춘다.
 설명은 핵심 개념, 작은 사례와 사용 조건을 포함한다.
 이해 확인을 요청하면 짧은 확인 질문을 제공한다.
@@ -218,6 +222,7 @@ Test Case는 실제 Program이 비교한다.
 같은 Session은 필요한 앞선 대화와 활성 Context를 사용한다.
 Role 전환은 같은 Session을 유지한다.
 현재 자료, Study Unit, Page와 Code의 참조 대상을 입력 영역에 표시한다.
+Project 학습에서는 Repository와 선택한 Commit을 함께 표시한다.
 사용자는 참조 대상을 해제할 수 있다.
 
 완료 조건:
@@ -229,6 +234,7 @@ Role 전환은 같은 Session을 유지한다.
 - Page와 Task는 다음 요청에서 최신 저장값을 조회한다.
 - Code 질문은 해당 Turn의 Code Snapshot을 사용한다.
 - 다른 문제로 이동하면 이전 문제의 Code와 조건을 섞지 않는다.
+- 다른 Repository 또는 Commit으로 이동하면 이전 Project의 근거와 면접 대상을 섞지 않는다.
 - 오래된 대화를 확인하지 못하면 기억하는 것처럼 답하지 않는다.
 - Session 삭제로 연결 Page와 Task를 삭제하지 않는다.
 
@@ -267,6 +273,7 @@ Coding Agent에는 Web Search Tool을 직접 제공하지 않는다.
 - 실제 URL과 확인한 자료를 답변에 연결한다.
 - 읽기 실패와 확인하지 못한 내용을 표시한다.
 - 저장한 URL을 자동으로 분석하지 않는다.
+- GitHub Project의 File 읽기는 FR-22의 명시한 분석 요청으로 처리한다.
 - 비공개 Code와 개인 정보 전체를 Search Query에 넣지 않는다.
 - 검색 실패가 Page 편집과 Task 관리를 막지 않는다.
 
@@ -274,6 +281,7 @@ Coding Agent에는 Web Search Tool을 직접 제공하지 않는다.
 
 사용자는 해야 할 작업과 선택적 마감을 직접 관리한다.
 자료, Study Unit과 Page를 Task에 연결할 수 있다.
+Project 학습 Task는 Repository Snapshot과 선택한 File을 연결할 수 있다.
 UI와 명확한 Chat 요청은 같은 저장 기능을 사용한다.
 
 완료 조건:
@@ -319,6 +327,7 @@ Planner는 선택한 작업의 시간 배치를 돕는다.
 검색 요청에는 직무, 경력 조건과 지역을 사용한다.
 Job Agent는 필수, 우대, 경력과 확인한 마감을 구분한다.
 사용자의 경험은 직접 제공한 설명과 선택한 자료만 사용한다.
+Project 기반 면접 준비는 FR-23을 따른다.
 
 완료 조건:
 
@@ -327,6 +336,7 @@ Job Agent는 필수, 우대, 경력과 확인한 마감을 구분한다.
 - 미확인 마감과 모집 상태를 만들어 내지 않는다.
 - Wiki 보유와 Task 완료를 숙련이나 경력으로 추정하지 않는다.
 - 확인한 경험, 준비 후보와 추가 확인 사항을 구분한다.
+- 연결한 Repository의 구현을 사용자의 개인 기여로 자동 추정하지 않는다.
 - 준비 후보는 처음에 중요한 항목 최대 세 개로 좁힌다.
 - 학습 연결은 실제 존재하는 Wiki와 Study Unit을 사용한다.
 - 관심, 준비, 지원, 면접, 결과의 상태를 사용자가 직접 관리한다.
@@ -335,7 +345,7 @@ Job Agent는 필수, 우대, 경력과 확인한 마감을 구분한다.
 ### FR-17. 하위 Page와 Template
 
 사용자는 Page를 계층으로 정리한다.
-개념 정리, Coding Record와 공고 준비의 Template을 선택할 수 있다.
+개념 정리, Coding Record, 공고 준비와 Project 학습의 Template을 선택할 수 있다.
 Template은 같은 Page 저장 구조를 사용한다.
 
 완료 조건:
@@ -363,7 +373,7 @@ Layout은 문서 내용과 별도로 저장한다.
 
 ### FR-19. 통합 검색
 
-Wiki, Page, Task와 보관한 공고를 종류별로 찾는다.
+Wiki, Page, Task, 보관한 공고와 연결한 Repository를 종류별로 찾는다.
 같은 Data를 새 저장소에 복제하지 않는다.
 
 완료 조건:
@@ -387,6 +397,7 @@ Markdown Export는 자료 이동용 형식이다.
 - 실패한 Restore로 기존 Database를 덮어쓰지 않는다.
 - 기존 Wiki와 API Key는 App Backup에 포함하지 않는다.
 - Restore 후 Wiki 설정과 Source Reference 상태를 확인한다.
+- Project 기록과 읽은 근거 Snapshot을 복원하되 외부 Repository의 현재 접근 가능 여부를 구분한다.
 
 ### FR-21. 후속 RAG 비교 실험
 
@@ -405,6 +416,60 @@ Markdown 원본은 수정하지 않는다.
 - 검색 실패, 잘못된 근거 선택과 답변 해석 오류를 구분한다.
 - 결과에 따라 기본 검색 적용, 제한 적용 또는 실험 유지로 결정한다.
 - 측정하지 않은 개선률을 문서에 적지 않는다.
+
+### FR-22. 공개 GitHub Project 연결과 이해
+
+사용자는 github.com의 공개 Repository URL을 연결한다.
+URL 저장과 분석 시작을 구분한다.
+사용자는 기본 Branch 또는 다른 Branch, Tag, Commit을 선택해 분석을 요청한다.
+App은 선택한 Ref를 Commit으로 고정하고 필요한 File을 읽는다.
+Learning Agent는 Project 목적, 주요 구성, 실행 진입점과 Data 흐름을 설명한다.
+의존성, Test와 실행 및 배포 설정은 실제 읽은 File을 근거로 설명한다.
+
+완료 조건:
+
+- 공개 Repository를 Token 없이 연결하고 잘못된 URL 및 접근 실패를 구분한다.
+- 분석 결과에 Repository, Commit, 조회 시각, 읽은 File과 제외 범위를 표시한다.
+- README, Directory 목록과 핵심 Code를 함께 읽고 설명에 File 및 줄 위치를 연결한다.
+- 구조와 Code에서 확인한 사실, AI의 추론과 미확인 내용을 구분한다.
+- README와 구현이 다르면 양쪽 근거를 표시하고 조용히 한쪽을 선택하지 않는다.
+- README가 없으면 확인한 File로 설명하고 없는 내용을 만들어 내지 않는다.
+- 크기 제한, 잘린 File 목록, Binary와 외부 Submodule 등 읽지 않은 범위를 표시한다.
+- 다른 Commit의 File을 한 분석에 섞지 않는다.
+- 재분석은 새 Snapshot을 만들고 기존 학습 기록의 Commit과 근거를 유지한다.
+- Rate Limit, 빈 Repository, 읽기 실패와 취소를 전체 분석 완료로 표시하지 않는다.
+- API Key 없이도 연결 정보와 읽은 File을 확인한다. AI 설명에는 Model 연결을 요구한다.
+- Repository의 Code와 설치 Script를 실행하지 않고 원격 File을 수정하지 않는다.
+- Repository의 AGENTS.md 등 외부 File을 App의 Rules 또는 Tool 권한으로 사용하지 않는다.
+
+### FR-23. GitHub Project 기반 공부와 면접 준비
+
+사용자는 연결한 Project에서 공부 또는 모의 면접을 선택한다.
+학습 수준과 관심 기능 또는 File은 선택 입력이다.
+Learning Agent는 실제 읽은 Code를 따라 기능, 필요한 개념과 설계 선택을 설명한다.
+사용자는 실행 흐름 추적, 동작 예측과 개선 대안 비교로 이해를 확인할 수 있다.
+관련 Wiki와 실제 존재하는 Study Unit을 필요한 경우 연결한다.
+
+모의 면접은 구조, 기술 선택, Data 흐름, 오류 처리와 Test 등 확인한 구현을 질문한다.
+Learning Agent는 한 번에 한 질문을 제시한다.
+사용자가 답하면 맞는 내용, 보완할 내용과 근거 File을 표시한다.
+필요하면 같은 답변에 이어 질문한다.
+공고별 준비를 요청했을 때만 Job Agent가 요구사항을 연결한다.
+
+완료 조건:
+
+- 구조 설명에서 선택한 핵심 File의 학습과 같은 Session의 후속 질문으로 이어진다.
+- 사용자 요청 없이 Quiz, Page 작성과 자동 Study Unit 생성을 강제하지 않는다.
+- 실제 구현 질문과 가정한 개선 상황 질문을 구분한다.
+- 사용자의 답변 뒤 피드백과 후속 질문이 같은 Commit의 근거를 사용한다.
+- 외부 Project를 공부한 내용과 사용자가 직접 구현한 경험을 구분한다.
+- 개인 역할, 선택 이유, 문제 해결 과정과 성과는 사용자가 제공한 내용만 사용한다.
+- Code만 보고 작성자의 실제 의도, 운영 성과와 사용자의 기여를 확정하지 않는다.
+- 면접 질문 예시는 제공하되 실제 회사의 출제 또는 합격을 보장하지 않는다.
+- 사용자가 요청하면 같은 Page Service에 정리 내용과 면접 메모를 저장한다.
+- 사용자가 요청하면 같은 Task Service에 공부할 항목과 해당 근거를 연결한다.
+- App 재시작 후 Project, Commit, Session과 저장한 기록으로 학습을 이어간다.
+- Project 학습으로 Role을 바꿔도 현재 Coding Test에 대한 FR-06 제한을 유지한다.
 
 ## 5. 공통 품질 요구사항
 

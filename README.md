@@ -9,9 +9,9 @@ Coding Agent는 Markdown 기반 Algorithm 학습과 정답 없는 Coding Test �
 Job Agent는 공고의 근거와 사용자가 명시한 경험을 연결한다.
 오답노트는 직접 작성하는 보조 Page다.
 
-상태: 2026-10-05 R0의 순서 1(Package, Lock File, Health Check 및 Build 검증)을 완료했다.
-Frontend(React, TypeScript, Vite)와 Backend(FastAPI, uv, pytest)의 기본 Skeleton과 환경 설정을 갖췄다.
-다음 작업은 R0 순서 2인 Wiki MCP 연결(Tool, Resource, Prompt, Client)이다.
+상태: 2026-10-05 R0의 순서 2(Wiki MCP의 Tool, Resource, Prompt 및 Client stdio 연결, API 연동)를 완료했다.
+Backend에서 stdio Child Process로 Wiki MCP Server를 구동하고, 경로 보안(Path Traversal/Junction 방어), Markdown 파서, 해시 기반 버전 관리, Keyword 검색 및 FastAPI 엔드포인트를 연결했다.
+다음 작업은 R0 순서 3인 Page 및 Task 저장, Revision, Session 저장과 Backup 연결이다.
 문서 Diagram의 생성은 App 구현과 별도로 관리한다.
 
 ## 문서 진입점

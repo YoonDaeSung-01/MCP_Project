@@ -5,9 +5,9 @@
 
 ## 1. 현재 단계
 
-현재 단계는 R0(기술 경계 검증)의 순서 1(환경, Package, Lock File 준비 및 기본 실행 검증)을 마친 상태다.
-Backend(FastAPI, uv, pytest)와 Frontend(React, Vite, TypeScript)의 초기 Package 설정과 Build 검증을 완료했다.
-다음 작업은 docs/PROJECT_PLAN.md §6의 구현 순서 2(Wiki MCP의 Tool, Resource, Prompt와 Client 연결)를 따른다.
+현재 단계는 R0(기술 경계 검증)의 순서 2(Wiki MCP의 Tool, Resource, Prompt와 Client 연결)를 마친 상태다.
+Wiki MCP Server(stdio Child Process), Client, Service, FastAPI 엔드포인트 및 관련 검증(76개 pytest 통과)을 완료했다.
+다음 작업은 docs/PROJECT_PLAN.md §6의 구현 순서 3(Page 및 Task 저장, Revision, Session 저장과 Backup을 연결한다)을 따른다.
 R0의 경계 검증 없이 R1 기능을 먼저 구현하지 않는다.
 단계가 바뀌면 이 절과 README.md의 상태를 함께 수정한다.
 
