@@ -1,7 +1,7 @@
 # Project Plan
 
-개정일: 2026-10-04
-상태: 구현 계획 확정. App Code, Package 설치와 실행 검증은 아직 없다.
+개정일: 2026-10-05
+상태: R0 순서 1(환경, Package, Lock File, Health Check 및 Build 검증) 완료. 순서 2(Wiki MCP 연결) 대기.
 
 이 문서는 Project의 목적, 우선순위, Release 범위와 구현 순서를 관리한다.
 기능 계약은 [PRD](./PRD.md)를 따른다.

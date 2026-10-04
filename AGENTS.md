@@ -5,9 +5,9 @@
 
 ## 1. 현재 단계
 
-현재 단계는 R0 이전이다.
-App Code, Package 설정과 실행 검증은 아직 없다.
-다음 작업은 docs/PROJECT_PLAN.md §6의 구현 순서를 따른다.
+현재 단계는 R0(기술 경계 검증)의 순서 1(환경, Package, Lock File 준비 및 기본 실행 검증)을 마친 상태다.
+Backend(FastAPI, uv, pytest)와 Frontend(React, Vite, TypeScript)의 초기 Package 설정과 Build 검증을 완료했다.
+다음 작업은 docs/PROJECT_PLAN.md §6의 구현 순서 2(Wiki MCP의 Tool, Resource, Prompt와 Client 연결)를 따른다.
 R0의 경계 검증 없이 R1 기능을 먼저 구현하지 않는다.
 단계가 바뀌면 이 절과 README.md의 상태를 함께 수정한다.
 
@@ -19,7 +19,7 @@ R0의 경계 검증 없이 R1 기능을 먼저 구현하지 않는다.
 | 기능, 사용자 제어, 완료 조건 | docs/PRD.md |
 | 기술 선택, Directory, Module, 저장 및 실행 계약 | docs/ARCHITECTURE.md |
 | 사용자 조작 순서 | docs/USER_FLOWS.md |
-| 문서 작성 규칙, Technical Name 정의 | docs/DOCUMENTATION_STYLE.md |
+| 문서 및 답변 작성 규칙, Technical Name 정의 | docs/DOCUMENTATION_STYLE.md |
 | 판단 근거 | docs/PROJECT_REVIEW.md, docs/research |
 
 전략과 계획을 수정할 때 docs/PROJECT_PLAN.md를 먼저 확인한다.
@@ -31,9 +31,9 @@ R0의 경계 검증 없이 R1 기능을 먼저 구현하지 않는다.
 일반 Project 문서는 docs에서 관리한다.
 Root의 README.md와 AGENTS.md는 진입 문서와 개발 규칙이다.
 
-## 3. 문서 작성
+## 3. 문서 및 답변 작성
 
-전략, 구현 계획, 검토 기록, README를 작성할 때 docs/DOCUMENTATION_STYLE.md를 따른다.
+전략, 구현 계획, 검토 기록, README, 사용자 답변을 작성할 때 docs/DOCUMENTATION_STYLE.md를 따른다.
 설명은 한국어로 쓴다.
 기술 용어와 English에서 온 표현은 English로 쓴다.
 Project Technical Name은 docs/DOCUMENTATION_STYLE.md §5의 정의에 맞춘다.
@@ -77,9 +77,12 @@ Project는 OneDrive 동기화 경로 안에 있다.
 | 목적 | 명령 | 상태 |
 |---|---|---|
 | 문서 Diagram 생성 | `node scripts/render_docs.mjs <renderer-package-directory>` | 사용 중 |
-| Backend 설치 및 Test | R0에서 정한다 (uv, pytest) | 미정 |
-| Frontend 설치 및 Test | R0에서 정한다 (npm, Playwright) | 미정 |
-| App 시작 및 종료 | R0에서 정한다 | 미정 |
+| Backend 설치 | `uv sync` (backend 디렉터리) | 사용 중 |
+| Backend Test | `uv run pytest` (backend 디렉터리) | 사용 중 |
+| Frontend 설치 | `npm install` (frontend 디렉터리) | 사용 중 |
+| Frontend Build | `npm run build` (frontend 디렉터리) | 사용 중 |
+| Backend 서버 실행 | `uv run uvicorn learning_app.api.main:app --host 127.0.0.1 --port 8000` | 사용 중 |
+| Frontend 개발 서버 실행 | `npm run dev` (frontend 디렉터리) | 사용 중 |
 
 ## 7. 구현 규칙
 
