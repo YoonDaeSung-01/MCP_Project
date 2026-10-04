@@ -28,12 +28,25 @@ class Settings(BaseSettings):
     wiki_root_ai_usage: Path | None = None
     wiki_root_algorithms: Path | None = None
 
+    app_data_dir: Path | None = None
+    app_timezone: str = "Asia/Seoul"
+
     wiki_search_default_limit: int = Field(default=10, ge=1)
     wiki_search_max_limit: int = Field(default=20, ge=1)
     wiki_read_max_chars: int = Field(default=12000, ge=1)
     wiki_snippet_max_chars: int = Field(default=200, ge=20)
     wiki_snippets_per_note: int = Field(default=3, ge=1)
     wiki_max_file_bytes: int = Field(default=2_000_000, ge=1)
+
+    def get_data_dir(self) -> Path:
+        """사용자 데이터베이스 및 로컬 데이터 저장 디렉터리를 반환한다."""
+        if self.app_data_dir is not None:
+            return self.app_data_dir
+        import os
+
+        local_app_data = os.environ.get("LOCALAPPDATA")
+        base = Path(local_app_data) if local_app_data else Path.home() / ".local" / "share"
+        return base / "MCP_project"
 
 
 @lru_cache

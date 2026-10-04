@@ -1,21 +1,95 @@
-"""FastAPI application entrypoint and Wiki API routes."""
+"""FastAPI application entrypoint and API routes.
+
+- Wiki API (/api/wiki)
+- Pages API (/api/pages)
+- Tasks API (/api/tasks)
+- Sessions API (/api/sessions)
+- Backup API (/api/backups)
+"""
 
 from __future__ import annotations
 
-from collections.abc import AsyncGenerator
+import sqlite3
+from collections.abc import AsyncGenerator, Generator
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Annotated, Any
 
-from fastapi import Depends, FastAPI, HTTPException, Query, status
+from fastapi import Body, Depends, FastAPI, HTTPException, Path as FastPath, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 
+from learning_app.db.connection import open_connection
+from learning_app.db.migrator import apply_migrations
+from learning_app.db.models import (
+    PageCreate,
+    PageDTO,
+    PageUpdate,
+    SessionCreate,
+    SessionDTO,
+    TaskCreate,
+    TaskDTO,
+    TaskUpdate,
+    TurnCreate,
+    TurnDTO,
+)
 from learning_app.integrations.wiki_mcp_client import WikiMCPClient
+from learning_app.services.backup_service import BackupService
+from learning_app.services.page_service import PageService
+from learning_app.services.session_service import SessionService
+from learning_app.services.task_service import TaskService
 from learning_app.services.wiki_service import WikiService
-from learning_app.settings import get_settings
+from learning_app.settings import Settings, get_settings
 from learning_app.wiki_mcp.errors import WikiError, WikiErrorCode
 
 _wiki_client: WikiMCPClient | None = None
 _wiki_service: WikiService | None = None
+
+
+# ---------------------------------------------------------------- Dependencies
+
+def get_db_path() -> Path:
+    settings = get_settings()
+    data_dir = settings.get_data_dir()
+    return data_dir / "app.sqlite"
+
+
+def get_backup_dir() -> Path:
+    settings = get_settings()
+    data_dir = settings.get_data_dir()
+    return data_dir / "backups"
+
+
+def get_db_connection() -> Generator[sqlite3.Connection, None, None]:
+    """SQLite 데이터베이스 연결을 생성하고 반환한다 (마이그레이션 자동 적용)."""
+    db_path = get_db_path()
+    conn = open_connection(db_path)
+    apply_migrations(conn)
+    try:
+        yield conn
+    finally:
+        conn.close()
+
+
+def get_page_service(
+    conn: Annotated[sqlite3.Connection, Depends(get_db_connection)],
+) -> PageService:
+    return PageService(conn)
+
+
+def get_task_service(
+    conn: Annotated[sqlite3.Connection, Depends(get_db_connection)],
+) -> TaskService:
+    return TaskService(conn)
+
+
+def get_session_service(
+    conn: Annotated[sqlite3.Connection, Depends(get_db_connection)],
+) -> SessionService:
+    return SessionService(conn)
+
+
+def get_backup_service() -> BackupService:
+    return BackupService(db_path=get_db_path(), backup_dir=get_backup_dir())
 
 
 def get_wiki_service() -> WikiService:
@@ -28,10 +102,21 @@ def get_wiki_service() -> WikiService:
     return _wiki_service
 
 
+# ---------------------------------------------------------------- Lifespan
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    """앱 종료 시 활성화된 Wiki MCP Client를 닫는다."""
+    """앱 기동 시 DB 마이그레이션을 확인하고 종료 시 Wiki MCP Client를 닫는다."""
+    # 앱 기동 시 DB 초기화 확인
+    db_path = get_db_path()
+    init_conn = open_connection(db_path)
+    try:
+        apply_migrations(init_conn)
+    finally:
+        init_conn.close()
+
     yield
+
     global _wiki_client, _wiki_service
     if _wiki_client is not None:
         await _wiki_client.close()
@@ -69,11 +154,14 @@ def _handle_wiki_error(exc: WikiError) -> HTTPException:
     )
 
 
+# ---------------------------------------------------------------- Health
+
 @app.get("/api/health")
 async def health_check() -> dict[str, str]:
-    """Health check endpoint."""
     return {"status": "ok", "version": "0.1.0"}
 
+
+# ---------------------------------------------------------------- Wiki API
 
 @app.get("/api/wiki/notes")
 async def get_wiki_notes(
@@ -83,16 +171,11 @@ async def get_wiki_notes(
     limit: int | None = Query(default=None, description="최대 조회 개수"),
     service: Annotated[WikiService, Depends(get_wiki_service)] = None,  # type: ignore
 ) -> dict[str, Any]:
-    """Wiki Note 목록 조회 또는 검색."""
     try:
         if query:
-            res = await service.search_notes(
-                query=query, collection=collection, limit=limit
-            )
+            res = await service.search_notes(query=query, collection=collection, limit=limit)
             return res.model_dump(mode="json")
-        res = await service.list_notes(
-            collection=collection, cursor=cursor, limit=limit
-        )
+        res = await service.list_notes(collection=collection, cursor=cursor, limit=limit)
         return res.model_dump(mode="json")
     except WikiError as exc:
         raise _handle_wiki_error(exc) from exc
@@ -103,7 +186,6 @@ async def get_wiki_headings(
     note_id: str = Query(..., description="Note ID 식별자"),
     service: Annotated[WikiService, Depends(get_wiki_service)] = None,  # type: ignore
 ) -> dict[str, Any]:
-    """Note의 목차와 Heading 정보 조회."""
     try:
         res = await service.get_headings(note_id=note_id)
         return res.model_dump(mode="json")
@@ -119,7 +201,6 @@ async def get_wiki_note(
     cursor: str | None = Query(default=None, description="읽기 커서"),
     service: Annotated[WikiService, Depends(get_wiki_service)] = None,  # type: ignore
 ) -> dict[str, Any]:
-    """Note 전체 또는 Section 원문 조회."""
     try:
         res = await service.read_note(
             note_id=note_id,
@@ -136,8 +217,258 @@ async def get_wiki_note(
 async def get_wiki_index(
     service: Annotated[WikiService, Depends(get_wiki_service)] = None,  # type: ignore
 ) -> dict[str, Any]:
-    """Wiki 인덱스 구성 및 메타데이터 조회."""
     try:
         return await service.get_index()
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+# ---------------------------------------------------------------- Page API
+
+@app.post("/api/pages", status_code=status.HTTP_201_CREATED)
+async def create_page(
+    data: PageCreate,
+    service: Annotated[PageService, Depends(get_page_service)],
+) -> PageDTO:
+    try:
+        return service.create_page(data)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.get("/api/pages/{page_id}")
+async def get_page(
+    page_id: str = FastPath(..., description="Page ID"),
+    service: Annotated[PageService, Depends(get_page_service)] = None,  # type: ignore
+) -> PageDTO:
+    try:
+        return service.get_page(page_id)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.get("/api/pages")
+async def list_pages(
+    kind: str | None = Query(default=None, description="문서 종류 필터 (page, coding_record)"),
+    limit: int = Query(default=50, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    service: Annotated[PageService, Depends(get_page_service)] = None,  # type: ignore
+) -> list[PageDTO]:
+    try:
+        return service.list_pages(kind=kind, limit=limit, offset=offset)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.patch("/api/pages/{page_id}")
+async def update_page(
+    page_id: str,
+    data: PageUpdate,
+    service: Annotated[PageService, Depends(get_page_service)],
+) -> PageDTO:
+    try:
+        return service.update_page(page_id, data)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.delete("/api/pages/{page_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_page(
+    page_id: str,
+    service: Annotated[PageService, Depends(get_page_service)],
+) -> None:
+    try:
+        service.delete_page(page_id)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+# ---------------------------------------------------------------- Task API
+
+@app.post("/api/tasks", status_code=status.HTTP_201_CREATED)
+async def create_task(
+    data: TaskCreate,
+    service: Annotated[TaskService, Depends(get_task_service)],
+) -> TaskDTO:
+    try:
+        return service.create_task(data)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.get("/api/tasks/{task_id}")
+async def get_task(
+    task_id: str,
+    service: Annotated[TaskService, Depends(get_task_service)],
+) -> TaskDTO:
+    try:
+        return service.get_task(task_id)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.get("/api/tasks")
+async def list_tasks(
+    status: str | None = Query(default=None, description="상태 필터 (open, done, archived)"),
+    limit: int = Query(default=50, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    service: Annotated[TaskService, Depends(get_task_service)] = None,  # type: ignore
+) -> list[TaskDTO]:
+    try:
+        return service.list_tasks(status=status, limit=limit, offset=offset)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.patch("/api/tasks/{task_id}")
+async def update_task(
+    task_id: str,
+    data: TaskUpdate,
+    service: Annotated[TaskService, Depends(get_task_service)],
+) -> TaskDTO:
+    try:
+        return service.update_task(task_id, data)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.post("/api/tasks/{task_id}/archive")
+async def archive_task(
+    task_id: str,
+    expected_revision: int = Body(..., embed=True),
+    request_id: str | None = Body(default=None, embed=True),
+    service: Annotated[TaskService, Depends(get_task_service)] = None,  # type: ignore
+) -> TaskDTO:
+    try:
+        return service.archive_task(task_id, expected_revision=expected_revision, request_id=request_id)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.post("/api/tasks/{task_id}/restore")
+async def restore_task(
+    task_id: str,
+    expected_revision: int = Body(..., embed=True),
+    request_id: str | None = Body(default=None, embed=True),
+    service: Annotated[TaskService, Depends(get_task_service)] = None,  # type: ignore
+) -> TaskDTO:
+    try:
+        return service.restore_task(task_id, expected_revision=expected_revision, request_id=request_id)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.delete("/api/tasks/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_task(
+    task_id: str,
+    service: Annotated[TaskService, Depends(get_task_service)],
+) -> None:
+    try:
+        service.delete_task(task_id)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+# ---------------------------------------------------------------- Session API
+
+@app.post("/api/sessions", status_code=status.HTTP_201_CREATED)
+async def create_session(
+    data: SessionCreate,
+    service: Annotated[SessionService, Depends(get_session_service)],
+) -> SessionDTO:
+    try:
+        return service.create_session(data)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.get("/api/sessions/{session_id}")
+async def get_session(
+    session_id: str,
+    service: Annotated[SessionService, Depends(get_session_service)],
+) -> SessionDTO:
+    try:
+        return service.get_session(session_id)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.get("/api/sessions")
+async def list_sessions(
+    limit: int = Query(default=50, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    service: Annotated[SessionService, Depends(get_session_service)] = None,  # type: ignore
+) -> list[SessionDTO]:
+    try:
+        return service.list_sessions(limit=limit, offset=offset)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.patch("/api/sessions/{session_id}/context")
+async def update_session_context(
+    session_id: str,
+    active_context: dict[str, Any],
+    service: Annotated[SessionService, Depends(get_session_service)],
+) -> SessionDTO:
+    try:
+        return service.update_active_context(session_id, active_context)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.post("/api/sessions/{session_id}/turns", status_code=status.HTTP_201_CREATED)
+async def add_turn(
+    session_id: str,
+    data: TurnCreate,
+    service: Annotated[SessionService, Depends(get_session_service)],
+) -> TurnDTO:
+    try:
+        return service.add_turn(session_id, data)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.get("/api/sessions/{session_id}/turns")
+async def list_turns(
+    session_id: str,
+    service: Annotated[SessionService, Depends(get_session_service)],
+) -> list[TurnDTO]:
+    try:
+        return service.list_turns(session_id)
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+# ---------------------------------------------------------------- Backup API
+
+@app.post("/api/backups", status_code=status.HTTP_201_CREATED)
+async def create_backup(
+    service: Annotated[BackupService, Depends(get_backup_service)],
+) -> dict[str, Any]:
+    try:
+        return service.create_backup()
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.get("/api/backups")
+async def list_backups(
+    service: Annotated[BackupService, Depends(get_backup_service)],
+) -> list[dict[str, Any]]:
+    try:
+        return service.list_backups()
+    except WikiError as exc:
+        raise _handle_wiki_error(exc) from exc
+
+
+@app.post("/api/backups/restore")
+async def restore_backup(
+    filename: str = Body(..., embed=True),
+    service: Annotated[BackupService, Depends(get_backup_service)] = None,  # type: ignore
+) -> dict[str, str]:
+    try:
+        service.restore_backup(filename)
+        return {"status": "ok", "message": f"성공적으로 복원되었습니다: {filename}"}
     except WikiError as exc:
         raise _handle_wiki_error(exc) from exc

@@ -1,8 +1,8 @@
 # Architecture
 
-개정일: 2026-10-04
-공식 API 근거 확인일: 2026-10-04
-상태: 기술 선택과 논리 계약 확정. App 설치 및 통합 실행 검증은 아직 없다.
+개정일: 2026-10-05
+공식 API 근거 확인일: 기존 선택은 2026-10-04. GitHub 및 HTTPX 계약은 2026-10-05.
+상태: 기술 선택과 논리 계약 확정. R0 순서 1을 완료했다. GitHub 연결은 설계이며 실행 검증 전이다.
 
 이 문서는 기술 Stack, Module, 저장, API와 AI 실행 계약을 관리한다.
 Release 범위는 [Project Plan](./PROJECT_PLAN.md)을 따른다.
@@ -50,6 +50,7 @@ flowchart LR
   CT["Study Content Files"]
   G["Gemini API"]
   WEB["Public Web"]
+  GH["GitHub REST API"]
   UI -->|"실행 요청"| RT
   UI -->|"HTTP API"| API
   API --> SV
@@ -57,7 +58,9 @@ flowchart LR
   H -->|"명확한 변경"| SV
   SV --> DB
   SV --> CT
+  SV -->|"요청한 공개 File 읽기"| GH
   H --> MC
+  H -->|"Repository 읽기 Tool"| SV
   H -->|"Model 및 Web Search"| G
   MC -->|"stdio"| WM
   WM -->|"읽기 전용"| MD
@@ -69,7 +72,9 @@ flowchart LR
 Runtime iframe은 App과 다른 Origin을 사용한다.
 Runtime은 Wiki, Database와 Model API Key를 받지 않는다.
 Diagram의 App Services는 Page, Study, Practice, Task와 Session Service를 뜻한다.
-후속 Calendar와 Job도 같은 Backend에 추가한다.
+후속 Calendar, Job과 Repository Service도 같은 Backend에 추가한다.
+GitHub 연결은 Repository Service가 Backend의 HTTP Adapter를 호출하는 경로다.
+Wiki MCP와 요청한 Web Search의 경로는 각각 유지한다.
 
 ## 3. 기술 Stack
 
@@ -85,6 +90,7 @@ Package의 정확한 설치 Version은 R0의 Lock File에 기록한다.
 | Model | google-genai, Interactions API | 공통 Model 연결과 Tool Calling |
 | 초기 Model 설정 | gemini-3.8-flash | 변경 가능한 기본 Model ID |
 | MCP | 공식 mcp Python SDK v2, MCPServer, Client, stdio | Wiki 연결과 실제 Protocol 처리 |
+| GitHub 연결 | GitHub REST API, httpx.AsyncClient | 공개 Repository의 Metadata와 선택한 File 읽기 |
 | Page Editor | BlockNote 일반 Core | Block 편집과 내부 순서 변경 |
 | Wiki Viewer | react-markdown, remark-gfm | 읽기 전용 Markdown 표시 |
 | Wiki Parser | markdown-it-py, PyYAML safe_load | Frontmatter, Heading과 본문 분석 |
@@ -115,8 +121,8 @@ Next.js, Redux, LangGraph, Redis와 PostgreSQL은 초기 구성에 추가하지 
 
 ## 4. Directory와 Module
 
-Source Directory는 구현을 위한 자리다.
-실제 App Code File과 Package 설정은 아직 없다.
+Source Directory에는 R0 순서 1의 Skeleton과 Package 설정이 있다.
+아래 세부 배치는 단계별 구현 계약이며 모든 Module의 구현 완료를 뜻하지 않는다.
 문서 Diagram 생성 Script는 App 구현과 별개다.
 문서 Diagram의 생성물은 docs/diagrams에 둔다.
 
@@ -177,12 +183,15 @@ MCP_project/
 | backend/src/learning_app/agents/skills | App이 직접 읽는 작업 절차 Markdown |
 | backend/src/learning_app/harness | Supervisor, Context, Rules, Hook, 실행과 취소 |
 | backend/src/learning_app/tools | Tool Call과 Service의 Adapter |
-| backend/src/learning_app/integrations | Gemini, Web Search와 MCP Client 연결 |
+| backend/src/learning_app/integrations | Gemini, Web Search, MCP Client와 GitHub HTTP Adapter 연결 |
 | backend/src/learning_app/wiki_mcp | 읽기 전용 Wiki MCP Server |
 | content | 자체 Study Unit과 기초 문제의 JSON 정의 및 Markdown 설명 |
 | scripts | 실제 Windows 시작, Backup과 문서 Diagram 생성의 진입점 |
 
-Calendar, Planner, Job과 Layout Directory는 해당 기능 구현 시 추가한다.
+Calendar, Planner, Job, Repository와 Layout의 File은 해당 기능 구현 시 추가한다.
+Repository 연결은 services/repository_service.py와 integrations/github_client.py로 나눈다.
+Frontend의 Project 학습 화면은 features/repositories에서 관리한다.
+학습 및 면접 절차는 agents/skills/project_study.md에 두고 공통 Role Runner가 읽는다.
 한 기능에만 쓰는 File을 shared에 모으지 않는다.
 Frontend 의존성은 frontend/package.json과 package-lock.json에서 관리한다.
 Backend 의존성은 backend/pyproject.toml과 uv.lock에서 관리한다.
@@ -207,6 +216,8 @@ Wiki MCP용 두 번째 Python 환경을 만들지 않는다.
 | Event | 후속 SQLite | event_id, task_id, start_at, end_at, timezone, revision | Calendar Service |
 | Planner Settings | 후속 SQLite | 목표, 가능 시간과 사용자 입력 예상 시간 | Planner Service |
 | Job | 후속 SQLite | job_id, URL, 요구사항 근거, 지원 상태, 확인 시각, revision | Job Service |
+| Repository | 후속 SQLite | repository_id, 정규 URL, 선택한 Ref, 최신 Snapshot 참조, revision | Repository Service |
+| Repository Snapshot | 후속 SQLite | snapshot_id, GitHub Repository ID, commit_sha, tree_sha, 읽은 File 및 범위, 조회 상태와 시각 | Repository Service |
 | Layout | 후속 SQLite | Widget ID, 대상 참조, 위치와 크기 | Layout Service |
 | 실험 Index | E1의 파생 File | 원문 Version, Section, Embedding Model 및 설정 | 실험 Index 생성 경로 |
 
@@ -214,6 +225,10 @@ Page와 별도의 Note Data Entity를 만들지 않는다.
 Widget은 원본 Data를 복제하지 않고 ID로 참조한다.
 외부 Coding Test용 Attempt 저장소를 따로 만들지 않는다.
 Session Context의 ID는 참조이며 Page와 Task의 원본 사본이 아니다.
+Repository Snapshot은 실제 읽은 제한된 File 본문과 Source Reference를 보존한다.
+Project 설명과 면접 대화는 Message로 저장한다.
+사용자가 요청한 학습 정리와 면접 메모는 일반 Page로 저장한다.
+전체 Repository 사본과 별도 면접 Database를 만들지 않는다.
 새 요청에서는 필요한 원본을 다시 조회한다.
 Study Unit의 난이도는 사용자가 선택한 학습 수준이다.
 
@@ -259,6 +274,11 @@ API와 Function Tool은 같은 Service를 호출한다.
 | POST /api/turns/{turn_id}/cancel | Turn ID, request_id | 취소 요청과 실제 처리 상태 |
 | PUT /api/practice/drafts/{target_id} | Code와 revision | 저장한 Draft |
 | POST /api/practice/attempts | 실행 Snapshot, Version과 Browser 결과 | 저장한 Attempt |
+| POST /api/repositories | 공개 Repository URL, 선택적 Ref, request_id | 연결 정보만 저장한다. 자동 분석하지 않는다 |
+| GET /api/repositories | 조회 조건 | 연결한 Repository와 Snapshot 상태 |
+| GET /api/repositories/{repository_id} | Repository ID | 연결 정보와 기존 Snapshot 참조 |
+| GET /api/repository-snapshots/{snapshot_id} | Snapshot ID | Commit, 읽은 목록, 제외 범위와 준비 상태 |
+| GET /api/repository-snapshots/{snapshot_id}/file | Snapshot ID, path, 줄 범위 또는 cursor | 읽은 원문 구간과 Source Reference |
 
 같은 Session의 활성 AI Turn은 하나다.
 Backend는 한 Process에서 해당 Session의 실행을 순서대로 관리한다.
@@ -274,7 +294,12 @@ Turn 상태는 queued, running, cancel_requested, completed, cancelled, failed, 
 실패 응답은 error_code, 설명, 재시도 가능 여부와 필요한 대상 ID를 가진다.
 오류 종류는 validation_error, not_found, conflict, source_changed, permission_denied,
 connection_error, provider_error, timeout, cancelled를 구분한다.
-후속 Event, Planner, Job과 Layout API도 같은 계약 원칙을 사용한다.
+후속 Event, Planner, Job, Repository와 Layout API도 같은 계약 원칙을 사용한다.
+Project 분석은 기존 Turn 입력에 operation=repository_analyze, repository_id와 선택적 ref를 사용한다.
+일반 Chat의 operation은 chat이다.
+Snapshot 준비, 상태 조회와 취소는 같은 Turn 실행 계약을 사용한다.
+Model 연결이 없으면 읽기 결과를 남기고 AI 설명의 미실행 상태를 표시한다.
+취소와 Model 실패 전에 읽은 근거는 보존하되 AI 분석 완료로 표시하지 않는다.
 
 ## 7. Wiki MCP 계약
 
@@ -353,7 +378,7 @@ flowchart TB
     OC["Output Check"]
     SC --> CX
     CX --> SP
-    SP -->|"일반 개념"| LA
+    SP -->|"개념 및 Project 학습"| LA
     SP -->|"Algorithm 및 힌트"| CA
     SP -->|"공고 분석"| JA
     SP -->|"명확한 변경"| MG
@@ -400,7 +425,7 @@ Supervisor가 최종 답변을 다시 작성하지 않는다.
 
 App Skill은 Codex Skill과 별개다.
 App은 필요한 Skill을 직접 읽는다.
-외부 문서와 Web Page를 새 Rules로 사용하지 않는다.
+외부 문서, Web Page와 Repository File을 새 Rules로 사용하지 않는다.
 Hook은 사용자 Code와 Shell Command를 실행하지 않는다.
 범용 Hook 등록 System은 만들지 않는다.
 
@@ -408,10 +433,10 @@ Hook은 사용자 Code와 Shell Command를 실행하지 않는다.
 
 | Role 또는 경로 | 목적 | 허용 Tool |
 |---|---|---|
-| Learning Agent | AI, Data, Backend와 일반 CS 설명 및 피드백 | Wiki 읽기 및 검색, 요청한 Web Search와 URL 읽기 |
+| Learning Agent | AI, Data, Backend와 일반 CS 설명, Project 학습과 기술 면접 피드백 | Wiki 읽기 및 검색, 요청한 Web Search와 URL 읽기, 선택한 Repository Snapshot 읽기 |
 | Coding Agent | algorithm 및 coding_test 학습 안내 | Wiki 읽기 및 검색 |
-| Job Agent | 공고 근거와 명시한 경험 및 준비 후보 연결 | 요청한 공고 검색, URL 읽기와 관련 Wiki 조회 |
-| App 관리 경로 | 사용자가 명확히 요청한 Page, Task와 일정 변경 | 같은 Service의 제한된 변경 Function |
+| Job Agent | 공고 근거와 명시한 경험 및 준비 후보 연결 | 요청한 공고 검색, URL 읽기, 관련 Wiki와 선택한 Repository Snapshot 읽기 |
+| App 관리 경로 | 사용자가 명확히 요청한 Page, Task, 일정과 Repository 연결 및 분석 준비 | 같은 Service의 제한된 변경 Function |
 
 Role Runner의 Model 호출과 Tool 실행은 공통 Harness를 사용한다.
 Python 문법은 Algorithm 또는 Coding Test의 선행 내용이면 Coding Agent에서 설명한다.
@@ -421,6 +446,9 @@ Python 문법은 Algorithm 또는 Coding Test의 선행 내용이면 Coding Agen
 선택한 Page와 Code Snapshot은 Harness가 필요한 범위로 전달한다.
 Job 분석만 요청했으면 Learning Agent를 자동 호출하지 않는다.
 공고 분석과 기술 설명을 함께 요청했을 때만 두 Role을 연결한다.
+Project 학습과 일반 기술 모의 면접은 Learning Agent가 담당한다.
+공고별 준비를 요청했을 때만 Job Agent가 요구사항과 사용자가 제공한 경험을 연결한다.
+Coding Agent에는 Repository 조회 Tool을 추가하지 않는다.
 
 ### Coding Context와 정답 제공 제한
 
@@ -451,13 +479,14 @@ Session Context는 활성 대상과 사용자가 명시한 요청 조건을 저�
 | 값 | 의미 |
 |---|---|
 | study_unit_id | 현재 단원 |
-| source_refs | 선택한 Wiki 및 실제 근거 |
+| source_refs | 선택한 Wiki, Repository File 및 실제 근거 |
+| repository_snapshot_id | 현재 Project의 Repository 및 고정한 Commit 참조 |
 | coding_record_page_id | 선택한 보조 문제 기록 |
 | code_target_ref | 현재 Code의 대상 |
 | problem_context_key | 기록이 없는 질문도 포함한 현재 문제의 연결 식별자 |
 | source_mode | wiki 또는 wiki_web |
 | explanation_level | 기초, 응용, 심화의 사용자 선택 |
-| learning_goal | concept, algorithm, coding_test, job |
+| learning_goal | concept, algorithm, coding_test, job, project_study, project_interview |
 | hint_level | 확인 질문, 개념 설명, 문법 예제, 부분 점검 |
 
 새 문제를 명시하거나 다른 Coding Record를 선택하면 문제 Context를 갱신한다.
@@ -467,6 +496,10 @@ Session Context는 활성 대상과 사용자가 명시한 요청 조건을 저�
 원문을 확인하지 않은 조건을 보충해서 사실로 저장하지 않는다.
 Code는 Turn 시작 시 Snapshot으로 고정한다.
 편집 중인 현재 Code와 이미 질문한 Code를 구분한다.
+Project를 바꾸거나 새 Snapshot을 선택하면 이전 Project의 File과 면접 대상을 해제한다.
+Repository 선택만으로 활성 Coding Test의 정답 제공 제한을 해제하지 않는다.
+기존 Session을 다시 열면 저장한 Commit을 유지한다.
+최신 Branch 조회와 재분석은 사용자가 요청했을 때만 수행한다.
 
 Context에는 현재 질문, 필요한 최근 Message, 선택 자료와 최신 Data를 넣는다.
 모든 Message를 매번 보내지 않는다.
@@ -517,6 +550,8 @@ sequenceDiagram
 
 기본 source_mode는 wiki다.
 명시한 검색 요청과 wiki_web에서만 공개 웹 자료를 사용한다.
+FR-22의 Repository 분석은 별도 명시한 자료 읽기 요청이다.
+Repository 선택만으로 Web Search와 전체 Source 전송을 시작하지 않는다.
 Google Search와 URL Context를 google-genai로 연결한다.
 검색 결과를 받은 뒤 Role 입력에 전달하는 순차 처리를 사용한다.
 여러 종류의 Tool을 한 API Call에 결합하는 기능을 필수 조건으로 삼지 않는다.
@@ -587,6 +622,7 @@ Frontend에 필요한 공개 설정만 별도 응답으로 전달한다.
 | Wiki 읽기 응답 크기 | 최대 12,000자, Cursor로 다음 구간 조회 |
 | 작은 Python Function 실행 제한 | 3초 |
 | Python 출력 제한 | 64 KiB |
+| GitHub 연결 및 읽기 설정 | 17절의 설정 계약 |
 
 제한은 각 Role에 따로 주지 않고 Turn 전체에 적용한다.
 분류, Web Search 단계와 복합 Role 호출을 함께 계산한다.
@@ -606,6 +642,8 @@ OneDrive Project 안에는 실행 중 Database를 두지 않는다.
 SQLite Backup API로 일관된 Backup을 만든다.
 Backup은 Schema Version과 App 저장 Data의 연결 관계를 보존한다.
 원래 Wiki와 API Key는 포함하지 않는다.
+연결한 Repository 정보, 제한된 근거 Snapshot과 사용자 기록은 App Backup에 포함한다.
+외부 Repository 전체와 GitHub Token은 포함하지 않는다.
 
 Restore는 App을 종료한 상태에서 수행한다.
 Schema와 File의 유효성을 먼저 검증한다.
@@ -704,3 +742,118 @@ App의 package.json과 pyproject.toml에는 추가하지 않는다.
 공식 Mermaid의 Theme 기능도 Source 표현의 대안이다.
 [Mermaid Theme 문서](https://mermaid.js.org/config/theming.html)
 지원하지 않는 신규 Diagram 문법을 사용해서 문서의 호환성을 낮추지 않는다.
+
+## 17. 공개 GitHub Repository 계약
+
+이 절은 FR-22와 FR-23의 구현 계약이다.
+공식 문서 확인일은 2026-10-05다.
+선택한 API의 실제 연결과 Model 설명은 아직 검증하지 않았다.
+
+### 입력과 책임
+
+입력 URL은 https://github.com/{owner}/{repo} 형식이다.
+끝의 .git과 마지막 /는 정규화한다.
+File URL, Gist, 비공개 Repository와 GitHub Enterprise는 지원 범위 밖으로 표시한다.
+Branch, Tag 또는 Commit은 URL의 하위 경로로 추측하지 않고 별도 ref 입력으로 받는다.
+ref가 없으면 조회한 default_branch를 사용한다.
+Repository Service는 입력, 읽기 계획, Snapshot 저장과 사용자 제어를 맡는다.
+GitHub Adapter는 Metadata, Commit, Tree와 Blob의 HTTP 읽기 및 오류 변환을 맡는다.
+Learning Agent는 준비한 근거로 구조 설명과 학습 및 면접 피드백을 작성한다.
+
+사용자가 URL 연결만 요청하면 연결 정보만 저장한다.
+분석 요청은 Repository Service가 새 Snapshot을 준비하는 Turn을 시작한다.
+같은 요청의 재시도는 request_id로 중복 준비를 막는다.
+재분석은 새 Snapshot을 만든다.
+기존 Snapshot의 Commit과 저장한 원문을 교체하지 않는다.
+추가 File 읽기는 선택한 Snapshot의 Commit 안에서만 허용한다.
+
+### 실제 자료 읽기
+
+1. GET /repos/{owner}/{repo}로 Repository ID, visibility와 기본 Branch를 확인한다.
+2. GET /repos/{owner}/{repo}/commits/{ref}로 commit_sha와 tree_sha를 고정한다.
+3. GET /repos/{owner}/{repo}/git/trees/{tree_sha}로 File 목록을 읽는다.
+4. 읽기 계획은 README, 의존성 정의, 진입점, 핵심 Module, Test와 실행 설정을 우선한다.
+5. Tree에서 확인한 blob_sha만 GET /repos/{owner}/{repo}/git/blobs/{blob_sha}로 읽는다.
+6. 허용한 Text 본문과 줄 위치, 제외 이유 및 실제 읽기 결과를 Snapshot에 저장한다.
+
+recursive Tree의 truncated=true와 App의 목록 제한은 불완전한 범위로 표시한다.
+사용자는 관심 Directory를 좁혀 같은 Commit의 하위 Tree를 추가로 읽을 수 있다.
+목록의 존재와 해당 File 본문의 읽기 성공을 구분한다.
+Binary, 생성물, 의존성 Directory, 비밀 설정 File과 크기 제한 초과 File은 제외한다.
+제외 Pattern과 우선 읽기 Pattern은 공통 설정에서 관리한다.
+UTF-8로 읽을 수 없는 File은 Encoding 오류로 표시한다.
+Symlink의 대상, Git LFS 원본과 Submodule의 외부 Repository는 따라가지 않는다.
+외부 Link와 설치 지침은 읽기만 하며 자동 실행하지 않는다.
+
+Source Reference는 source_type=github, repository_id, snapshot_id, commit_sha,
+path, blob_sha, start_line, end_line과 해당 Commit의 GitHub URL을 가진다.
+원문 Link는 /blob/{commit_sha}/{path}와 줄 Anchor를 사용한다.
+줄 위치는 실제로 읽은 원문을 기준으로 계산한다.
+이름이 비슷한 다른 File과 다른 Commit의 구간으로 근거를 대신하지 않는다.
+
+Model Context에는 선택한 원문 구간과 확인한 범위만 전달한다.
+전체 Repository를 한 Prompt에 넣지 않는다.
+전체 Tree를 읽어도 모든 File 내용을 검토했다고 표시하지 않는다.
+구조 설명은 확인한 사실, Code에서 추론한 동작과 미확인 실행 상태를 구분한다.
+개발자의 선택 이유와 개인 기여는 Code에서 확정하지 않는다.
+
+### Tool과 설정
+
+| 구성 | 입력 | 결과 |
+|---|---|---|
+| prepare_repository | repository_id, ref, request_id | 새 Snapshot과 읽기 계획의 실제 처리 상태. App 관리 경로만 호출 |
+| list_repository_files | snapshot_id, 선택적 Directory와 cursor | 고정한 Commit의 목록과 누락 상태 |
+| read_repository_file | snapshot_id, path, 줄 범위 또는 cursor | 검증한 원문 구간과 Source Reference |
+
+UI의 분석과 Chat의 분석 요청은 같은 Repository Service를 호출한다.
+Learning 및 Job Agent는 선택한 Snapshot의 조회 Tool만 사용한다.
+추가 원문 조회도 같은 Service의 크기, 경로와 실행 제한을 적용한다.
+Model이 임의 HTTP URL, Shell Command와 Git 변경을 실행하는 Tool은 제공하지 않는다.
+
+| 설정 | 초기값 또는 기준 |
+|---|---|
+| GITHUB_API_BASE_URL | https://api.github.com. 공개 GitHub의 허용 Host를 검사한다 |
+| GITHUB_API_VERSION | 2026-03-10. X-GitHub-Api-Version으로 전달한다 |
+| GITHUB_TOKEN | 선택적 Backend 비밀 설정. 공개 조회에 필수로 요구하지 않는다 |
+| Repository Tree 범위 | 최대 10,000 Entry, 응답 최대 8 MiB |
+| 초기 읽기 File 수 | 최대 16개. 사용자가 관심 범위를 좁혀 추가로 읽는다 |
+| File 본문 크기 | File당 최대 128 KiB, 준비 Turn 전체 최대 1 MiB |
+| GitHub HTTP 요청 수 | Turn당 최대 24회. App Tool 실행 제한과 별도로 함께 검사한다 |
+| HTTP Timeout | 요청당 20초. Turn 전체의 남은 시간을 넘지 않는다 |
+| 원문 구간 응답 | 최대 12,000자. Cursor와 줄 범위로 이어 읽는다 |
+| 읽기 및 제외 규칙 | README, 의존성, 진입점, 핵심 Module 및 Test를 우선하는 공통 Pattern 설정 |
+
+이 값은 조정 가능한 초기 제한이다.
+실측 성능과 GitHub가 허용한 최대값을 뜻하지 않는다.
+HTTPX의 AsyncClient와 Streaming으로 응답 크기를 검사하고 취소 시 연결을 정리한다.
+호출 Host, Repository ID와 Tree의 path를 검증한다.
+Redirect도 허용 Host와 횟수를 검사하며 Credential을 다른 Host에 전달하지 않는다.
+Token과 제외한 비밀 File은 Browser, Model Context와 기본 Log에 전달하지 않는다.
+Token이 있어도 visibility가 public이 아닌 Repository의 본문은 읽지 않는다.
+
+### 실패와 검증
+
+GitHub의 x-ratelimit-* 및 retry-after Header로 실제 제한과 재시도 가능 시각을 표시한다.
+Rate Limit은 rate_limited로 구분하고 허용 시각 전에는 자동 재시도하지 않는다.
+404는 대상 없음 또는 접근 불가로 표시하며 비공개 Repository의 존재를 확정하지 않는다.
+빈 Repository와 없는 Ref, 권한 오류, Timeout, Encoding 오류와 연결 실패를 구분한다.
+일부 읽기 실패와 크기 제한은 Snapshot의 제외 목록과 부분 분석 상태로 남긴다.
+준비 중 취소 또는 Backend 종료는 기존 Turn의 cancelled 및 interrupted 계약을 따른다.
+Model 실패는 원문 조회 실패와 구분한다.
+AI 설명 미실행 상태를 성공한 Project 분석으로 바꾸지 않는다.
+
+pytest는 URL 및 경로 검증, Commit 고정, 중복 요청, 부분 읽기와 Tool 권한을 확인한다.
+Playwright는 URL 연결부터 근거 열기, 공부, 면접 답변과 다시 열기까지 확인한다.
+실제 공개 Repository와 Model 호출로 설명의 근거 및 면접 피드백을 검토한다.
+Fixture Test와 실제 GitHub 및 Model 연결 결과를 구분한다.
+
+공식 근거:
+
+- [GitHub Repository 조회](https://docs.github.com/en/rest/repos/repos#get-a-repository)
+- [GitHub Commit 조회](https://docs.github.com/en/rest/commits/commits#get-a-commit)
+- [GitHub Tree 조회 및 truncated 처리](https://docs.github.com/en/rest/git/trees#get-a-tree)
+- [GitHub Blob 조회](https://docs.github.com/en/rest/git/blobs#get-a-blob)
+- [GitHub API Version](https://docs.github.com/en/rest/about-the-rest-api/api-versions)
+- [GitHub Rate Limit](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api)
+- [HTTPX AsyncClient 및 Streaming](https://www.python-httpx.org/async/)
+- [HTTPX Timeout](https://www.python-httpx.org/advanced/timeouts/)

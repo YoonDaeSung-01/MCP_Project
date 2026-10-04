@@ -1,6 +1,6 @@
 # User Flow
 
-개정일: 2026-10-04
+개정일: 2026-10-05
 상태: 사용자 흐름 확정. 아래 흐름은 아직 구현하거나 실행 검증하지 않았다.
 
 이 문서는 사용자가 시작하고 조작하며 결과를 확인하는 순서를 관리한다.
@@ -28,6 +28,9 @@ flowchart TB
   START["Browser App"]
   GOAL{"사용 목적"}
   STUDY["Wiki 또는 Study Unit"]
+  REPO["GitHub URL 연결 및 분석"]
+  RP["Commit과 근거 Code"]
+  RQ["Project 공부 및 모의 면접"]
   LQ["개념 질문"]
   LA["Learning Agent"]
   CONCEPT["설명과 Source Reference"]
@@ -45,6 +48,10 @@ flowchart TB
   LQ --> LA
   LA --> CONCEPT
   CONCEPT --> APPLY
+  GOAL -->|"Project 학습"| REPO
+  REPO --> RP
+  RP --> RQ
+  RQ --> LA
   GOAL -->|"Coding Test"| EXT
   EXT --> CQ
   CQ --> CA
@@ -60,12 +67,13 @@ flowchart TB
 
 Algorithm 질문은 Coding Agent로 연결한다.
 위 Diagram의 개념 학습 경로는 일반 기술 개념을 표시한다.
+GitHub 경로의 제공 시점은 Project Plan을 따른다.
 Programmers에서의 풀이 수정과 제출은 사용자가 직접 수행한다.
 기록은 선택이며 공부의 완료 조건이 아니다.
 
 ## 2. 화면과 상태의 공통 규칙
 
-- 질문 전에 활성 자료, Page, Code와 요청 설정을 확인하거나 해제할 수 있다.
+- 질문 전에 활성 자료, Page, Code, Repository의 Commit과 요청 설정을 확인하거나 해제할 수 있다.
 - UI는 읽기, 검색, 저장과 Model 실행 상태를 구분한다.
 - AI 실행을 취소해도 작성 중인 Page와 Code를 유지한다.
 - 변경이 완료됐으면 실제 대상과 저장 결과를 보여준다.
@@ -295,6 +303,7 @@ Profile 등록을 선행 조건으로 요구하지 않는다.
 Wiki 보유를 사용자의 경험과 숙련으로 해석하지 않는다.
 원문을 읽지 못하면 제공 본문에 근거한 분석임을 표시한다.
 분석 시각을 현재 모집 상태 확인 시각으로 바꾸지 않는다.
+GitHub Project를 연결한 면접 준비는 UF-16과 UF-17을 따른다.
 마감이 없으면 날짜를 만들지 않는다.
 지원 상태는 사용자가 직접 관리한다.
 자동 지원, 합격 예측과 Mail 전송은 수행하지 않는다.
@@ -393,7 +402,62 @@ Coding Agent의 허용 Concept Reference를 실험에서도 유지한다.
 성능이 나아지지 않은 질문도 결과에 남긴다.
 비교 전에 Embedding 검색을 기본 사용 흐름으로 바꾸지 않는다.
 
-## 18. 요구사항과 Flow 연결
+## 18. UF-16. GitHub Project를 연결하고 공부하기
+
+연결 요구사항: FR-04, FR-07, FR-10, FR-11, FR-13, FR-20, FR-22, FR-23.
+처리 경로: App 관리 경로의 Repository 준비 후 Learning Agent.
+제공 시점은 Project Plan을 따른다.
+
+1. 사용자는 공개 GitHub Repository URL을 입력한다.
+2. 연결 정보만 저장하거나 분석 시작을 선택한다.
+3. 분석할 기본 Branch 또는 다른 Branch, Tag, Commit을 선택한다.
+4. App은 Commit을 고정하고 Directory 목록과 필요한 File을 읽는다.
+5. 사용자는 읽은 File, 제외 범위와 실제 처리 상태를 확인한다.
+6. Model 연결이 있으면 Project 목적, 구성과 주요 실행 흐름의 설명을 확인한다.
+7. 설명의 근거에서 해당 Commit의 File과 Code 구간을 연다.
+8. 관심 기능과 학습 수준을 선택하거나 같은 Chat에서 바로 질문한다.
+9. Learning Agent의 안내로 핵심 Code를 읽고 동작을 자신의 말로 설명한다.
+10. 필요하면 공부한 내용을 Page에 저장하거나 Task 생성을 요청한다.
+11. 다음에 같은 Project와 Session을 열어 저장한 Commit의 학습을 이어간다.
+
+결과: 사용자는 Project 개요에서 핵심 Code와 관련 개념의 공부로 이어간다.
+App은 확인한 사실, AI의 추론과 실행하지 않은 동작을 구분한다.
+읽기 제한과 일부 실패는 부분 분석으로 표시한다.
+전체 File 목록을 읽었다는 이유로 모든 Code를 이해했다고 표시하지 않는다.
+README가 없어도 확인한 File을 사용하고 자료의 한계를 알린다.
+Model 연결이 없으면 연결 정보와 읽은 File을 열고 AI 설명의 미실행 상태를 확인한다.
+접근 실패, Rate Limit과 취소는 각각의 상태와 이미 읽은 범위를 표시한다.
+자료의 Code와 설치 Script는 실행하지 않는다.
+다른 Repository 또는 Commit을 선택하면 이전 Project의 활성 근거를 해제한다.
+재분석은 기존 학습 기록을 덮어쓰지 않고 새 Snapshot을 만든다.
+API Key와 Token을 사용자 화면에 표시하지 않는다.
+
+## 19. UF-17. GitHub Project로 면접 연습하기
+
+연결 요구사항: FR-04, FR-07, FR-10, FR-11, FR-13, FR-16, FR-23.
+처리 경로: Learning Agent. 공고별 준비를 요청했을 때만 Job Agent를 연결한다.
+시작 조건: 사용자가 Project와 분석할 Commit의 근거를 선택했다.
+
+1. 사용자는 선택한 Project에서 면접 연습을 시작한다.
+2. 관심 주제와 난이도를 선택하거나 바로 질문을 받는다.
+3. 자신의 경험으로 준비할 때는 실제 담당한 부분과 문제 해결 경험을 제공한다.
+4. 공고별 연습을 원하면 해당 공고를 선택하거나 내용을 제공한다.
+5. App은 실제 구현에 대한 질문 또는 가정한 개선 상황을 한 개 제시한다.
+6. 사용자는 자신의 말로 답한다.
+7. Learning Agent는 맞는 내용, 보완할 내용과 근거 Code를 보여준다.
+8. 사용자는 후속 질문에 답하거나 필요한 개념과 File로 돌아가 공부한다.
+9. 필요하면 답변과 피드백을 Page에 남기거나 공부할 Task를 요청한다.
+10. 연습을 종료하거나 같은 Session에서 이어간다.
+
+결과: 사용자는 Project의 동작과 기술 선택을 근거로 설명하는 연습을 한다.
+다른 사람의 Project를 공부해도 사용자가 직접 구현한 경험으로 표시하지 않는다.
+사용자의 역할, 개발자의 실제 의도와 운영 성과는 확인한 입력이 없으면 미확인으로 둔다.
+질문을 받기 위해 Profile, 공고와 Page를 먼저 등록할 필요는 없다.
+준비 질문을 실제 회사의 출제나 합격 가능성으로 표시하지 않는다.
+같은 질문의 후속 피드백은 선택한 Commit의 근거를 유지한다.
+현재 Coding Test의 정답 제공 제한은 Project 면접 모드에서도 유지한다.
+
+## 20. 요구사항과 Flow 연결
 
 | Flow | 주요 FR | 확인할 결과 |
 |---|---|---|
@@ -412,6 +476,8 @@ Coding Agent의 허용 Concept Reference를 실험에서도 유지한다.
 | UF-13 | FR-07, FR-14, FR-18, FR-19 | 세 종류의 조작과 실제 대상 열기 |
 | UF-14 | FR-07, FR-08, FR-10, FR-13, FR-20 | 검증한 복원 |
 | UF-15 | FR-01, FR-02, FR-06, FR-21 | 검색 비교와 적용 판단 |
+| UF-16 | FR-04, FR-07, FR-10, FR-11, FR-13, FR-20, FR-22, FR-23 | 실제 Repository 읽기, 구조 이해와 학습 이어서 하기 |
+| UF-17 | FR-04, FR-07, FR-10, FR-11, FR-13, FR-16, FR-23 | 근거 Code를 사용한 면접 질문과 사용자 답변 피드백 |
 
 FR-17의 하위 Page와 Template은 UF-06의 Page 사용을 확장한다.
 후속 기능도 같은 저장 실패, Revision과 직접 편집 기준을 따른다.

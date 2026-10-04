@@ -362,3 +362,34 @@ FR 21개, NF 8개와 UF 15개의 정의 및 참조를 확인했다.
 Browser에서 한국어 글자, 연결선과 그림 범위 밖의 글자를 확인했다.
 이 검증은 문서와 Diagram에 대한 검증이다.
 App의 기능 Test, Model API 호출과 R0 실행 검증은 수행하지 않았다.
+
+## 13. 공개 GitHub Project 학습과 면접 준비
+
+검토일: 2026-10-05.
+사용자는 GitHub URL로 Project를 이해하고 공부 및 면접 준비를 하는 기능을 요청했다.
+연결의 첫 범위는 공개 Repository로 정했다.
+
+단순 README 요약보다 구조, 실행 진입점과 핵심 Code를 연결하는 학습 흐름이 필요하다.
+면접 연습은 사용자 답변 뒤 근거와 비교하고 필요한 공부로 돌아갈 수 있어야 한다.
+현행 기능 계약은 [PRD의 FR-22 및 FR-23](./PRD.md#fr-22-공개-github-project-연결과-이해)에 추가했다.
+제공 시점과 우선순위는 [Project Plan](./PROJECT_PLAN.md)에서 관리한다.
+사용 순서는 [UF-16 및 UF-17](./USER_FLOWS.md#18-uf-16-github-project를-연결하고-공부하기)에 있다.
+
+Learning Agent는 Project 이해, 개념 학습과 기술 면접 피드백을 담당한다.
+Job Agent는 공고별 준비를 요청했을 때 요구사항과 확인한 경험을 연결한다.
+기존 Role, Session, Page와 Task Service를 사용하므로 별도 Agent와 면접 Database는 추가하지 않는다.
+자동 Track 및 Study Unit 생성은 요구하지 않는다.
+Code의 존재와 사용자의 개인 기여 및 성과를 구분한다.
+
+GitHub Adapter는 필요한 File을 읽고 Commit을 고정한 Source Reference를 남긴다.
+이 방식은 같은 학습과 면접 연습의 근거가 다른 Version으로 바뀌는 문제를 줄인다.
+일부 File만 읽은 분석을 전체 Project 검토로 표시하지 않는다.
+원문 조회와 AI 설명, 정적 추론과 실제 실행 검증을 구분한다.
+Code 실행, 의존성 설치와 원격 변경은 요구하지 않는다.
+
+GitHub의 Tree 누락, Blob 조회와 Rate Limit 계약을 공식 문서로 확인했다.
+HTTPX의 AsyncClient, Streaming과 Timeout 계약도 공식 문서로 확인했다.
+근거 Link와 초기 읽기 제한은 [Architecture 17절](./ARCHITECTURE.md#17-공개-github-repository-계약)에 남겼다.
+httpx는 기존 Backend 의존성이며 이번 작업에서 새 Package를 설치하지 않았다.
+이번 변경은 요구사항과 설계 반영이다.
+실제 GitHub 연결, Model 설명과 Browser 학습 흐름의 검증은 해당 기능 구현 단계에 남아 있다.

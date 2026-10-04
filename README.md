@@ -8,10 +8,14 @@ Learning Agent는 AI, Data, Backend와 일반 CS 개념을 설명한다.
 Coding Agent는 Markdown 기반 Algorithm 학습과 정답 없는 Coding Test 학습 도움만 담당한다.
 Job Agent는 공고의 근거와 사용자가 명시한 경험을 연결한다.
 오답노트는 직접 작성하는 보조 Page다.
+후속 기능으로 공개 GitHub URL을 연결하는 Project 학습과 모의 면접을 계획했다.
+구조 설명, 핵심 Code 공부와 면접 피드백은 읽은 File과 고정한 Commit을 근거로 사용한다.
+해당 기능은 설계 상태이며 아직 App에서 사용할 수 없다.
+세부 동작은 [PRD의 FR-22 및 FR-23](./docs/PRD.md#fr-22-공개-github-project-연결과-이해)을 따른다.
 
-상태: 2026-10-05 R0의 순서 2(Wiki MCP의 Tool, Resource, Prompt 및 Client stdio 연결, API 연동)를 완료했다.
-Backend에서 stdio Child Process로 Wiki MCP Server를 구동하고, 경로 보안(Path Traversal/Junction 방어), Markdown 파서, 해시 기반 버전 관리, Keyword 검색 및 FastAPI 엔드포인트를 연결했다.
-다음 작업은 R0 순서 3인 Page 및 Task 저장, Revision, Session 저장과 Backup 연결이다.
+상태: 2026-10-05 R0의 순서 3(Page 및 Task 저장, Revision 충돌 검증, Session/Turn 저장, Backup & Restore)을 완료했다.
+SQLite 데이터베이스(WAL, foreign_keys, migration), Page/Task/Session Service, Optimistic Concurrency Control(409 Conflict), request_id 멱등성 및 원자적 Online Backup & Restore API를 구현하고 96개 테스트를 통과했다.
+다음 작업은 R0 순서 4인 Pyodide의 별도 Origin 실행 영역 검증이다.
 문서 Diagram의 생성은 App 구현과 별도로 관리한다.
 
 ## 문서 진입점

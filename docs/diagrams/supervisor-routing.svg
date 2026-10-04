@@ -37,7 +37,7 @@
 <polyline class="edge" data-from="OC" data-to="ANSWER" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="570.2228333333333,857.822 570.2228333333334,935.822" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
 <polyline class="edge" data-from="SC" data-to="CX" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="358.402,219.8 358.402,275.8" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
 <polyline class="edge" data-from="CX" data-to="SP" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="358.402,312.70000000000005 358.402,368.7000000000001" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<polyline class="edge" data-from="SP" data-to="LA" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="일반 개념" points="318.1654,462.58540000000005 318.1654,514.822 122.54650000000001,514.822 122.54650000000001,635.1220000000001" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="SP" data-to="LA" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="개념 및 Project 학습" points="318.1654,462.58540000000005 318.1654,514.822 122.54650000000001,514.822 122.54650000000001,635.1220000000001" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
 <polyline class="edge" data-from="SP" data-to="CA" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="Algorithm 및 힌트" points="344.9898,489.4098 344.9898,526.822 284.9705,526.822 284.9705,635.1220000000001" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
 <polyline class="edge" data-from="SP" data-to="JA" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="공고 분석" points="371.8142,489.4098000000001 371.8142,526.822 431.83349999999996,526.822 431.8335,635.1220000000001" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
 <polyline class="edge" data-from="SP" data-to="MG" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="명확한 변경" points="398.6386,462.5854000000001 398.6386,514.822 590.182,514.822 590.182,635.1220000000001" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
@@ -47,9 +47,9 @@
 <polyline class="edge" data-from="MG" data-to="WC" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="590.182,672.022 590.182,728.022" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
 <polyline class="edge" data-from="RD" data-to="OC" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="284.9705,764.922 284.9705,792.922 570.2228333333333,792.922 570.2228333333333,820.922" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
 <polyline class="edge" data-from="WC" data-to="OC" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="590.182,764.922 590.182,792.922 570.2228333333333,792.922 570.2228333333333,820.922" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
-<g class="edge-label" data-from="SP" data-to="LA" data-label="일반 개념">
-  <rect x="89.04650000000001" y="553.822" width="66.952" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
-  <text x="122.52250000000001" y="568.972" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">일반 개념</text>
+<g class="edge-label" data-from="SP" data-to="LA" data-label="개념 및 Project 학습">
+  <rect x="64.04650000000001" y="553.822" width="116.84800000000004" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="122.47050000000003" y="568.972" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">개념 및 Project 학습</text>
 </g>
 <g class="edge-label" data-from="SP" data-to="CA" data-label="Algorithm 및 힌트">
   <rect x="234.47050000000002" y="553.822" width="100.81000000000003" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />

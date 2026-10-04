@@ -1,6 +1,7 @@
 # 문서 작성 규칙
 
 작성일: 2026-10-04
+개정일: 2026-10-05
 적용 대상: 앞으로 작성하거나 수정하는 Project 전략, 구현 계획, 검토 기록, README, 사용자 답변.
 
 ## 1. ASD-STE100 적용 범위
@@ -110,6 +111,8 @@ ASD-STE100 일반 사전의 승인 어휘 목록을 복제한 표가 아니다.
 | Coding Record | 필요할 때 외부 문제의 Link, 내 Code와 배운 내용을 남기는 보조 Page |
 | Concept Reference | 설명에 사용할 검토된 개념 구간 |
 | Source Reference | 원문의 ID, Version, 구간 또는 URL을 가진 참조 |
+| Repository | 학습 대상으로 연결한 GitHub의 Code 및 문서 저장소 |
+| Repository Snapshot | 특정 Commit에서 실제로 읽은 File, 원문 구간과 읽기 상태를 보존한 학습 근거 |
 | Code | 실행하거나 검토하는 Source Code |
 | Code Draft | 사용자가 현재 편집하는 Code |
 | Code Snapshot | 한 Turn 또는 실행에 연결한 Code 사본 |
