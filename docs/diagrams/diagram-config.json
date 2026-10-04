@@ -1,0 +1,29 @@
+{
+  "renderer": "beautiful-mermaid",
+  "rendererVersion": "1.1.3",
+  "outputDirectory": "docs/diagrams",
+  "sources": [
+    "docs/ARCHITECTURE.md",
+    "docs/USER_FLOWS.md"
+  ],
+  "titles": {
+    "system-architecture": "System Architecture",
+    "supervisor-routing": "Supervisor Routing",
+    "multi-turn-sequence": "Multi-turn Sequence",
+    "core-user-flow": "Core User Flow"
+  },
+  "renderOptions": {
+    "bg": "#F8FAFC",
+    "fg": "#0F172A",
+    "line": "#64748B",
+    "accent": "#2563EB",
+    "muted": "#475569",
+    "surface": "#EFF6FF",
+    "border": "#CBD5E1",
+    "font": "Segoe UI, Malgun Gothic, sans-serif",
+    "padding": 40,
+    "nodeSpacing": 36,
+    "layerSpacing": 56,
+    "componentSpacing": 40
+  }
+}

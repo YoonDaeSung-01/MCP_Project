@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 644.5891666666666 1026.953" width="644.5891666666666" height="1026.953" style="--bg:#F8FAFC;--fg:#0F172A;--line:#64748B;--accent:#2563EB;--muted:#475569;--surface:#EFF6FF;--border:#CBD5E1;background:var(--bg)"><title>Core User Flow</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Segoe%20UI%2C%20Malgun%20Gothic%2C%20sans-serif:wght@400;500;600;700&amp;display=swap');
+  text { font-family: 'Segoe UI, Malgun Gothic, sans-serif', system-ui, sans-serif; }
+  svg {
+    /* Derived from --bg and --fg (overridable via --line, --accent, etc.) */
+    --_text:          var(--fg);
+    --_text-sec:      var(--muted, color-mix(in srgb, var(--fg) 60%, var(--bg)));
+    --_text-muted:    var(--muted, color-mix(in srgb, var(--fg) 40%, var(--bg)));
+    --_text-faint:    color-mix(in srgb, var(--fg) 25%, var(--bg));
+    --_line:          var(--line, color-mix(in srgb, var(--fg) 50%, var(--bg)));
+    --_arrow:         var(--accent, color-mix(in srgb, var(--fg) 85%, var(--bg)));
+    --_node-fill:     var(--surface, color-mix(in srgb, var(--fg) 3%, var(--bg)));
+    --_node-stroke:   var(--border, color-mix(in srgb, var(--fg) 20%, var(--bg)));
+    --_group-fill:    var(--bg);
+    --_group-hdr:     color-mix(in srgb, var(--fg) 5%, var(--bg));
+    --_inner-stroke:  color-mix(in srgb, var(--fg) 12%, var(--bg));
+    --_key-badge:     color-mix(in srgb, var(--fg) 10%, var(--bg));
+  }
+</style>
+<defs>
+  <marker id="arrowhead" markerWidth="8" markerHeight="5" refX="7" refY="2.5" orient="auto">
+    <polygon points="0 0, 8 2.5, 0 5" fill="var(--_arrow)" stroke="var(--_arrow)" stroke-width="0.75" stroke-linejoin="round" />
+  </marker>
+  <marker id="arrowhead-start" markerWidth="8" markerHeight="5" refX="1" refY="2.5" orient="auto-start-reverse">
+    <polygon points="8 0, 0 2.5, 8 5" fill="var(--_arrow)" stroke="var(--_arrow)" stroke-width="0.75" stroke-linejoin="round" />
+  </marker>
+</defs>
+<polyline class="edge" data-from="START" data-to="GOAL" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="348.62800000000004,76.9 348.62800000000004,132.90000000000006" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="GOAL" data-to="STUDY" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="개념 학습" points="316.76475,228.48975000000002 316.76475,304.353 138.77999999999997,304.353 138.78,392.653" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="STUDY" data-to="LQ" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="138.78,429.553 138.77999999999997,485.553" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="LQ" data-to="LA" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="138.77999999999997,522.453 138.78,578.453" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="LA" data-to="CONCEPT" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="138.78,615.353 138.78,671.353" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="CONCEPT" data-to="APPLY" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="138.78,708.2529999999999 138.78,736.2529999999999 243.704,736.2529999999999 243.704,764.2529999999999" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="GOAL" data-to="EXT" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="Coding Test" points="348.62800000000004,260.35299999999995 348.62800000000004,392.653" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="EXT" data-to="CQ" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="348.62800000000004,429.553 348.62800000000004,485.553" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="CQ" data-to="CA" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="348.62800000000004,522.453 348.62800000000004,578.453" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="CA" data-to="HINT" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="348.62800000000004,615.353 348.62800000000004,671.353" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="HINT" data-to="APPLY" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="348.628,708.2529999999999 348.628,736.2529999999999 243.704,736.2529999999999 243.704,764.2529999999999" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="GOAL" data-to="MANAGE" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="기록 및 관리" points="380.49125000000004,228.48975 380.49125000000004,304.353 510.9961666666667,304.353 510.9961666666667,857.1529999999999" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="MANAGE" data-to="SAVE" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="510.9961666666667,894.0529999999999 510.9961666666667,922.0529999999999 349.7395,922.0529999999999 349.7395,950.0529999999999" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="APPLY" data-to="RECORD" data-style="dotted" data-arrow-start="false" data-arrow-end="true" points="243.704,801.1529999999999 243.70399999999998,857.1529999999999" fill="none" stroke="var(--_line)" stroke-width="1" stroke-dasharray="4 4" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="RECORD" data-to="SAVE" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="243.704,894.0529999999999 243.704,922.0529999999999 349.7395,922.0529999999999 349.7395,950.0529999999999" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<g class="edge-label" data-from="GOAL" data-to="STUDY" data-label="개념 학습">
+  <rect x="105.28" y="311.353" width="66.952" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="138.756" y="326.503" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">개념 학습</text>
+</g>
+<g class="edge-label" data-from="GOAL" data-to="EXT" data-label="Coding Test">
+  <rect x="311.128" y="311.353" width="74.08000000000001" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="348.168" y="326.503" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">Coding Test</text>
+</g>
+<g class="edge-label" data-from="GOAL" data-to="MANAGE" data-label="기록 및 관리">
+  <rect x="470.4961666666667" y="775.853" width="80.614" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="510.8031666666667" y="791.0029999999999" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">기록 및 관리</text>
+</g>
+<g class="node" data-id="START" data-label="Browser App" data-shape="rectangle">
+  <rect x="288.7505" y="40" width="119.755" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="348.628" y="58.45" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Browser App</text>
+</g>
+<g class="node" data-id="GOAL" data-label="사용 목적" data-shape="diamond">
+  <polygon points="348.628,132.90000000000003 412.3545,196.62650000000002 348.628,260.353 284.9015,196.62650000000002" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="348.628" y="196.62650000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">사용 목적</text>
+</g>
+<g class="node" data-id="STUDY" data-label="Wiki 또는 Study Unit" data-shape="rectangle">
+  <rect x="59.266000000000005" y="392.653" width="159.028" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="138.78" y="411.103" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Wiki 또는 Study Unit</text>
+</g>
+<g class="node" data-id="LQ" data-label="개념 질문" data-shape="rectangle">
+  <rect x="87.05349999999999" y="485.553" width="103.453" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="138.77999999999997" y="504.003" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">개념 질문</text>
+</g>
+<g class="node" data-id="LA" data-label="Learning Agent" data-shape="rectangle">
+  <rect x="72.23349999999999" y="578.453" width="133.09300000000002" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="138.78" y="596.903" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Learning Agent</text>
+</g>
+<g class="node" data-id="CONCEPT" data-label="설명과 Source Reference" data-shape="rectangle">
+  <rect x="40" y="671.353" width="197.56" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="138.78" y="689.803" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">설명과 Source Reference</text>
+</g>
+<g class="node" data-id="EXT" data-label="Programmers" data-shape="rectangle">
+  <rect x="286.898" y="392.653" width="123.46" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="348.62800000000004" y="411.103" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Programmers</text>
+</g>
+<g class="node" data-id="CQ" data-label="막힌 부분 질문" data-shape="rectangle">
+  <rect x="280.97" y="485.553" width="135.316" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="348.62800000000004" y="504.003" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">막힌 부분 질문</text>
+</g>
+<g class="node" data-id="CA" data-label="Coding Agent" data-shape="rectangle">
+  <rect x="288.7505" y="578.453" width="119.755" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="348.628" y="596.903" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Coding Agent</text>
+</g>
+<g class="node" data-id="HINT" data-label="힌트와 관련 문법" data-shape="rectangle">
+  <rect x="273.56" y="671.353" width="150.136" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="348.628" y="689.803" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">힌트와 관련 문법</text>
+</g>
+<g class="node" data-id="APPLY" data-label="사용자가 직접 적용" data-shape="rectangle">
+  <rect x="161.226" y="764.2529999999999" width="164.95600000000002" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="243.704" y="782.703" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">사용자가 직접 적용</text>
+</g>
+<g class="node" data-id="MANAGE" data-label="Page 및 Task 직접 관리" data-shape="rectangle">
+  <rect x="417.4031666666667" y="857.1529999999999" width="187.18599999999998" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="510.9961666666667" y="875.603" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Page 및 Task 직접 관리</text>
+</g>
+<g class="node" data-id="SAVE" data-label="실제 저장 결과" data-shape="rectangle">
+  <rect x="282.0815" y="950.0529999999999" width="135.316" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="349.7395" y="968.5029999999999" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">실제 저장 결과</text>
+</g>
+<g class="node" data-id="RECORD" data-label="필요할 때 기록" data-shape="rectangle">
+  <rect x="176.046" y="857.1529999999999" width="135.316" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="243.704" y="875.603" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">필요할 때 기록</text>
+</g>
+</svg>

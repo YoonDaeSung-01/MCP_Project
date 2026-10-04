@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1323.748 342.85" width="1323.748" height="342.85" style="--bg:#F8FAFC;--fg:#0F172A;--line:#64748B;--accent:#2563EB;--muted:#475569;--surface:#EFF6FF;--border:#CBD5E1;background:var(--bg)"><title>System Architecture</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Segoe%20UI%2C%20Malgun%20Gothic%2C%20sans-serif:wght@400;500;600;700&amp;display=swap');
+  text { font-family: 'Segoe UI, Malgun Gothic, sans-serif', system-ui, sans-serif; }
+  svg {
+    /* Derived from --bg and --fg (overridable via --line, --accent, etc.) */
+    --_text:          var(--fg);
+    --_text-sec:      var(--muted, color-mix(in srgb, var(--fg) 60%, var(--bg)));
+    --_text-muted:    var(--muted, color-mix(in srgb, var(--fg) 40%, var(--bg)));
+    --_text-faint:    color-mix(in srgb, var(--fg) 25%, var(--bg));
+    --_line:          var(--line, color-mix(in srgb, var(--fg) 50%, var(--bg)));
+    --_arrow:         var(--accent, color-mix(in srgb, var(--fg) 85%, var(--bg)));
+    --_node-fill:     var(--surface, color-mix(in srgb, var(--fg) 3%, var(--bg)));
+    --_node-stroke:   var(--border, color-mix(in srgb, var(--fg) 20%, var(--bg)));
+    --_group-fill:    var(--bg);
+    --_group-hdr:     color-mix(in srgb, var(--fg) 5%, var(--bg));
+    --_inner-stroke:  color-mix(in srgb, var(--fg) 12%, var(--bg));
+    --_key-badge:     color-mix(in srgb, var(--fg) 10%, var(--bg));
+  }
+</style>
+<defs>
+  <marker id="arrowhead" markerWidth="8" markerHeight="5" refX="7" refY="2.5" orient="auto">
+    <polygon points="0 0, 8 2.5, 0 5" fill="var(--_arrow)" stroke="var(--_arrow)" stroke-width="0.75" stroke-linejoin="round" />
+  </marker>
+  <marker id="arrowhead-start" markerWidth="8" markerHeight="5" refX="1" refY="2.5" orient="auto-start-reverse">
+    <polygon points="8 0, 0 2.5, 8 5" fill="var(--_arrow)" stroke="var(--_arrow)" stroke-width="0.75" stroke-linejoin="round" />
+  </marker>
+</defs>
+<polyline class="edge" data-from="UI" data-to="RT" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="실행 요청" points="147.899,99.24999999999999 201.9770000000002,99.24999999999999 201.9770000000002,68.94999999999999 322.7020000000001,68.95000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="UI" data-to="API" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="HTTP API" points="147.899,111.55 191.899,111.55 191.899,141.85 322.7020000000001,141.85000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="API" data-to="SV" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="412.07600000000014,141.85000000000002 420.9625000000001,141.85000000000002 420.9625000000001,105.39999999999999 674.5010000000002,105.39999999999999" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="API" data-to="H" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="412.07600000000014,141.85000000000002 420.9625000000001,141.85000000000002 420.9625000000001,216.4875 429.849,216.4875" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="H" data-to="SV" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="명확한 변경" points="523.669,207.2625 535.6690000000002,207.2625 535.6690000000002,116.4 662.5010000000002,116.4 662.5010000000002,111.55 674.5010000000002,111.55" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="SV" data-to="DB" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="797.2200000000003,105.39999999999999 819.3067500000003,105.39999999999999 819.3067500000003,65.45 841.3935000000004,65.45" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="SV" data-to="CT" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="797.2200000000003,105.39999999999999 819.3067500000003,105.39999999999999 819.3067500000003,145.35000000000002 841.3935000000004,145.35000000000002" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="H" data-to="MC" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="523.669,216.4875 567.6690000000003,216.4875 567.6690000000003,218.25 579.6690000000003,218.25" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="H" data-to="G" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="Model 및 Web Search" points="523.669,225.7125 535.669,225.7125 535.669,283.70000000000005 716.081,283.70000000000005" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="MC" data-to="WM" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="stdio" points="685.3450000000004,218.25 841.3935000000004,218.25" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="WM" data-to="MD" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="읽기 전용" points="993.0115000000003,218.25 1152.1370000000002,218.25" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="G" data-to="WEB" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="요청한 검색" points="819.534,283.70000000000005 1002.366,283.70000000000005" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<g class="edge-label" data-from="UI" data-to="RT" data-label="실행 요청">
+  <rect x="209.9770000000002" y="52.949999999999996" width="66.952" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="243.4530000000002" y="68.1" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">실행 요청</text>
+</g>
+<g class="edge-label" data-from="UI" data-to="API" data-label="HTTP API">
+  <rect x="199.899" y="125.85" width="64.57600000000001" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="232.187" y="141" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">HTTP API</text>
+</g>
+<g class="edge-label" data-from="H" data-to="SV" data-label="명확한 변경">
+  <rect x="543.6690000000002" y="100.4" width="78.83200000000001" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="583.0850000000003" y="115.55000000000001" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">명확한 변경</text>
+</g>
+<g class="edge-label" data-from="H" data-to="G" data-label="Model 및 Web Search">
+  <rect x="543.669" y="267.70000000000005" width="120.41200000000002" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="603.875" y="282.85" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">Model 및 Web Search</text>
+</g>
+<g class="edge-label" data-from="MC" data-to="WM" data-label="stdio">
+  <rect x="737.3450000000004" y="202.25" width="40.221999999999994" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="757.4560000000004" y="217.4" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">stdio</text>
+</g>
+<g class="edge-label" data-from="WM" data-to="MD" data-label="읽기 전용">
+  <rect x="1033.1850000000004" y="202.25" width="66.952" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="1066.6610000000005" y="217.4" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">읽기 전용</text>
+</g>
+<g class="edge-label" data-from="G" data-to="WEB" data-label="요청한 검색">
+  <rect x="871.534" y="267.70000000000005" width="78.83200000000001" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="910.95" y="282.85" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">요청한 검색</text>
+</g>
+<g class="node" data-id="UI" data-label="Browser UI" data-shape="rectangle">
+  <rect x="40" y="86.94999999999999" width="107.899" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="93.9495" y="105.39999999999999" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Browser UI</text>
+</g>
+<g class="node" data-id="RT" data-label="Runtime Origin / Pyodide" data-shape="rectangle">
+  <rect x="322.7020000000001" y="50.5" width="182.73999999999998" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="414.0720000000001" y="68.95" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Runtime Origin / Pyodide</text>
+</g>
+<g class="node" data-id="API" data-label="FastAPI" data-shape="rectangle">
+  <rect x="322.7020000000001" y="123.4" width="89.374" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="367.3890000000001" y="141.85000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">FastAPI</text>
+</g>
+<g class="node" data-id="SV" data-label="App Services" data-shape="rectangle">
+  <rect x="674.5010000000002" y="86.94999999999999" width="122.71900000000001" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="735.8605000000002" y="105.39999999999999" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">App Services</text>
+</g>
+<g class="node" data-id="H" data-label="Harness" data-shape="rectangle">
+  <rect x="429.849" y="198.0375" width="93.82" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="476.759" y="216.4875" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Harness</text>
+</g>
+<g class="node" data-id="MC" data-label="MCP Client" data-shape="rectangle">
+  <rect x="579.6690000000003" y="199.8" width="105.676" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="632.5070000000003" y="218.25" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">MCP Client</text>
+</g>
+<g class="node" data-id="DB" data-label="SQLite" data-shape="cylinder">
+  <rect x="841.3935000000004" y="47" width="81.964" height="36.900000000000006" fill="var(--_node-fill)" stroke="none" />
+  <line x1="841.3935000000004" y1="47" x2="841.3935000000004" y2="83.9" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <line x1="923.3575000000003" y1="47" x2="923.3575000000003" y2="83.9" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <ellipse cx="882.3755000000003" cy="83.9" rx="40.982" ry="7" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <ellipse cx="882.3755000000003" cy="47" rx="40.982" ry="7" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="882.3755000000003" y="65.45" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">SQLite</text>
+</g>
+<g class="node" data-id="WM" data-label="Wiki MCP Process" data-shape="rectangle">
+  <rect x="841.3935000000004" y="199.8" width="151.618" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="917.2025000000003" y="218.25" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Wiki MCP Process</text>
+</g>
+<g class="node" data-id="MD" data-label="Markdown Wiki" data-shape="cylinder">
+  <rect x="1152.1370000000002" y="199.8" width="131.611" height="36.900000000000006" fill="var(--_node-fill)" stroke="none" />
+  <line x1="1152.1370000000002" y1="199.8" x2="1152.1370000000002" y2="236.70000000000002" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <line x1="1283.748" y1="199.8" x2="1283.748" y2="236.70000000000002" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <ellipse cx="1217.9425" cy="236.70000000000002" rx="65.8055" ry="7" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <ellipse cx="1217.9425" cy="199.8" rx="65.8055" ry="7" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="1217.9425" y="218.25" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Markdown Wiki</text>
+</g>
+<g class="node" data-id="CT" data-label="Study Content Files" data-shape="rectangle">
+  <rect x="841.3935000000004" y="126.9" width="154.582" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="918.6845000000003" y="145.35000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Study Content Files</text>
+</g>
+<g class="node" data-id="G" data-label="Gemini API" data-shape="rectangle">
+  <rect x="716.081" y="265.25" width="103.453" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="767.8075" y="283.7" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Gemini API</text>
+</g>
+<g class="node" data-id="WEB" data-label="Public Web" data-shape="rectangle">
+  <rect x="1002.366" y="265.25" width="107.158" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="1055.945" y="283.7" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Public Web</text>
+</g>
+</svg>
