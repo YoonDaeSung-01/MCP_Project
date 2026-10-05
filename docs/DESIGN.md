@@ -1,7 +1,23 @@
+---
+name: mcp-study-design-system
+version: 1.1.0
+theme_default: dark
+grid_unit: 4px
+breakpoints:
+  desktop: 1200px
+  tablet: 1024px
+  mobile: 768px
+tokens:
+  accent: "#5e6ad2"
+  bg_dark: "#08090a"
+  bg_light: "#f7f8f9"
+---
+
 # UI/UX Design System & Specification
 
 개정일: 2026-10-05  
-상태: 디자인 시스템 및 UI 사양 확정. 글로벌 개발자/AI 서비스 10종 전수조사 및 Best Practice(BP) 벤치마킹 기반.
+버전: v1.1.0  
+상태: 디자인 시스템 및 UI 사양 확정. Awesome Design MD 규격 및 Impeccable/frontend-design 스킬 감사 반영.
 
 이 문서는 개인 학습 App의 디자인 철학, 글로벌 벤치마킹 전수조사 분석, 워크스페이스 레이아웃, 디자인 토큰(Design Tokens), 화면별 컴포넌트 사양, 마이크로 인터랙션 및 키보드 접근성을 정의한다.
 요구사항은 [PRD](./PRD.md)를 따르고, 기술 아키텍처는 [Architecture](./ARCHITECTURE.md)를 따르며, 사용자 흐름은 [User Flow](./USER_FLOWS.md)를 따른다.
@@ -128,13 +144,34 @@
 - 정보 밀도와 신뢰성을 높여주는 VS Code 스타일의 초슬림 상태 표시줄.
 - 파일 인코딩(`UTF-8`), 줄바꿈(`LF`), 로컬 SQLite WAL 상태, Runtime 격리 포트(`127.0.0.1:5174`), 단축키 치트시트 링크 제공.
 
+### 3.6 반응형 브레이크포인트 및 패널 적응 (Responsive & Overflow Defense)
+- **데스크톱 (Desktop, >= 1200px)**:
+  - 3-Pane 완전 표시 (사이드바 260px + 메인 Flex: 1 + AI 패널 380px).
+- **태블릿 및 반창 (Tablet / Half Screen, 768px ~ 1199px)**:
+  - 중앙 메인 캔버스 가독성을 최우선 보호.
+  - 우측 AI Copilot 패널은 기본 접힘(`collapsed`) 상태로 전환되며, `Ctrl+L` 또는 토글 버튼 클릭 시 360px 플로팅 드로어(Floating Drawer/Overlay)로 오픈.
+  - 사이드바는 220px로 축소 가능하며, `Ctrl+B`로 접었을 때 40px 미니 아이콘 레일로 축소.
+- **모바일 (Mobile, < 768px)**:
+  - 단일 캔버스 뷰(Single Canvas) 모드로 전환.
+  - 좌측 사이드바는 햄버거 메뉴 및 전체 화면 오버레이 드로어로 전환.
+  - 터치 조작 최적화를 위해 주요 탭과 액션 버튼의 최소 터치 타깃 높이를 `44px`로 보장.
+  - 주소창 높이 변화에 대응하기 위해 루트 컨테이너 높이는 `100dvh`를 기본 적용.
+
+### 3.7 단일 경계선 원칙 (Single Border Placement Rule)
+Hairline Border(`--border-hairline`)가 중첩되어 2px로 겹치는 시각적 잡음(Border Stacking)을 방지하기 위해 단일 면에만 경계선을 배치한다.
+- **Top Navigation Bar**: `border-bottom`만 적용.
+- **Left Sidebar**: `border-right`만 적용.
+- **Right AI Copilot**: `border-left`만 적용.
+- **Bottom Status Bar**: `border-top`만 적용.
+- **Center Main Workspace**: 외곽 보더 없이 인접 패널의 경계선을 공유.
+
 ---
 
 ## 4. 디자인 토큰 명세 (Design Tokens Specification)
 
 Linear와 Cursor의 핵심 미학을 수치화하여 Vanilla CSS 토큰으로 정의한다.
 
-### 4.1 Color System (Achromatic Zinc & Electric Indigo)
+### 4.1 Color & Surface System (Achromatic Zinc & Electric Indigo)
 
 ```css
 :root {
@@ -145,11 +182,13 @@ Linear와 Cursor의 핵심 미학을 수치화하여 Vanilla CSS 토큰으로 �
   --bg-surface-hover: #222329;   /* 리스트 아이템 호버, 액티브 서피스 */
   --bg-surface-active: #2a2b33;  /* 선택된 탭, 프레스 상태 */
 
-  /* ================= 2. Hairline Borders (초미세 반투명 테두리) ================= */
+  /* ================= 2. Hairline Borders & Focus ================= */
   --border-hairline: rgba(255, 255, 255, 0.07);  /* 기본 1px 구획 분할선 */
   --border-subtle: rgba(255, 255, 255, 0.12);    /* 카드, 패널 기본 보더 */
   --border-strong: rgba(255, 255, 255, 0.20);    /* 입력창 호버, 구분 강조 */
-  --border-focus: #5e6ad2;                       /* 포커스 링 (Linear Indigo) */
+  --border-focus: #5e6ad2;                       /* 포커스 링 기본 색상 */
+  --focus-ring: 0 0 0 2px var(--accent-primary);  /* 키보드 포커스 링 (:focus-visible) */
+  --focus-ring-offset: 2px;                      /* 포커스 링 오프셋 */
 
   /* ================= 3. Typography Inks (가독성 계층) ================= */
   --text-primary: #f2f3f5;       /* 핵심 헤딩, 본문 텍스트 (높은 명도) */
@@ -172,6 +211,29 @@ Linear와 Cursor의 핵심 미학을 수치화하여 Vanilla CSS 토큰으로 �
   --status-warning-subtle: rgba(245, 158, 11, 0.12);
   --status-info: #0ea5e9;        /* 소스 참조, 시스템 안내 (Sky) */
   --status-info-subtle: rgba(14, 165, 233, 0.12);
+
+  /* ================= 6. Elevation & Shadows (깊이감 계층) ================= */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.24);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.32);
+  --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.45);   /* 드롭다운, 컨텍스트 메뉴 */
+  --shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.60);     /* 모달, 커맨드 팔레트 */
+
+  /* ================= 7. Spacing Scale (4px 그리드) ================= */
+  --space-0-5: 2px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* ================= 8. Breakpoints (반응형 기준점) ================= */
+  --breakpoint-desktop: 1200px;
+  --breakpoint-tablet: 1024px;
+  --breakpoint-mobile: 768px;
 }
 
 [data-theme="light"] {
@@ -186,10 +248,12 @@ Linear와 Cursor의 핵심 미학을 수치화하여 Vanilla CSS 토큰으로 �
   --border-subtle: rgba(0, 0, 0, 0.10);
   --border-strong: rgba(0, 0, 0, 0.18);
   --border-focus: #5e6ad2;
+  --focus-ring: 0 0 0 2px var(--accent-primary);
+  --focus-ring-offset: 2px;
 
   --text-primary: #121316;
   --text-secondary: #5a5d65;
-  --text-muted: #8c9098;
+  --text-muted: #71767f;         /* WCAG AA (4.5:1 이상) 준수 상향 */
   --text-inverse: #ffffff;
 
   --accent-primary: #5e6ad2;
@@ -205,6 +269,11 @@ Linear와 Cursor의 핵심 미학을 수치화하여 Vanilla CSS 토큰으로 �
   --status-warning-subtle: rgba(217, 119, 6, 0.08);
   --status-info: #0284c7;
   --status-info-subtle: rgba(2, 132, 199, 0.08);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.18);
 }
 ```
 
@@ -220,6 +289,8 @@ Linear와 Cursor의 핵심 미학을 수치화하여 Vanilla CSS 토큰으로 �
 - **Letter Spacing**:
   - 본문: `-0.01em` (가독성을 살린 미세 조임)
   - 헤딩 (H1, H2): `-0.025em` ~ `-0.03em` (Linear 특유의 압축된 authoritative 느낌)
+- **Tabular Numbers**:
+  - 실행 시간, 줄 번호, 토큰 카운트, 상태 수치 등 모든 동적 숫자는 `font-variant-numeric: tabular-nums`를 적용하여 자릿수 흔들림을 원천 방지한다.
 - **Type Scale**:
   - `11px` (Micro): 단축키 힌트, 태그 뱃지, 상태바
   - `12px` (Caption): 파일 경로, 작성 시각, 보조 레이블
@@ -307,8 +378,30 @@ Linear와 Cursor의 핵심 미학을 수치화하여 Vanilla CSS 토큰으로 �
     - 답변 하단에 인용된 Wiki 파일명, 라인 범위(`L42-L58`), 발췌문을 담은 카드 컴포넌트 노출.
     - 카드 클릭 시 좌측 Wiki 뷰어에서 해당 라인으로 스무스 스크롤 이동 및 2초간 하이라이트.
 - **Prompt Input Box**:
-  - 포커스 시 인디고 포커스 링(`0 0 0 1px var(--accent-primary)`).
+  - 포커스 시 인디고 포커스 링(`box-shadow: var(--focus-ring)`).
   - 엔터 전송, Shift+Enter 줄바꿈, `/` 명령어 지원.
+
+### 5.5 공통 컴포넌트 5대 상태 및 빈 화면 사양 (Universal States & Empty State)
+
+#### 5.5.1 표준 5대 인터랙션 상태 (5-State Completeness)
+모든 대화형(Interactive) 요소(버튼, 탭, 입력창, 리스트 아이템)는 다음 5가지 상태를 명확히 지원한다.
+
+1. **Default**: 기본 토큰 기반 명도 유지.
+2. **Hover**: `var(--bg-surface-hover)` 및 `var(--border-strong)`로 명도 미세 상승 (트랜지션 100ms~120ms).
+3. **Active/Pressed**: `transform: scale(0.98)` 미세 축소 및 `var(--bg-surface-active)` 적용.
+4. **Focus-Visible**: 키보드 Tab 키 진입 시 `box-shadow: var(--focus-ring)` 포커스 링 표시 (마우스 클릭 시 미표시).
+5. **Disabled / Loading**: `opacity: 0.45`, `cursor: not-allowed`, 포인터 이벤트 차단, 로딩 시 14px 스피너 아이콘 표시.
+
+#### 5.5.2 빈 데이터 화면 (Empty State Standard)
+목록이나 결과가 비어 있을 때 사용자의 학습 진행을 돕는 일관된 Empty State 컴포넌트를 제공한다.
+- **아이콘**: `48px x 48px` 단색 인라인 SVG (색상: `var(--text-muted)`).
+- **제목**: `15px SemiBold` (`var(--text-primary)`), 상황을 명확히 요약 (예: "저장된 오답노트가 없습니다").
+- **설명문**: `13px Regular` (`var(--text-secondary)`), 다음 행동 가이드 (예: "Practice 모드에서 오답이 발생했을 때 노트로 즉시 스크랩할 수 있습니다").
+- **행동 유도(CTA)**: `radius-sm` Primary 버튼 또는 단축키 힌트 캡슐.
+
+#### 5.5.3 웹 접근성(a11y) 및 오버플로우 필수 사양
+- 텍스트가 표시되지 않는 모든 단독 아이콘 버튼(패널 접기 `⇱`, 닫기 `×`, 테마 전환, 복사 등)에는 반드시 명시적인 `aria-label` 속성을 부여한다.
+- 긴 제목, 경로, 파일 이름은 컨테이너 너비를 초과할 경우 `overflow: hidden; text-overflow: ellipsis; white-space: nowrap;`를 적용하여 레이아웃 붕괴를 방지하고 `title` 속성에 전체 텍스트를 제공한다.
 
 ---
 
