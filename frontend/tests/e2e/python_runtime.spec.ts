@@ -127,4 +127,23 @@ test.describe('R0 순서 4: Pyodide 별도 Origin 실행 영역 및 격리 경�
     const stdout = await page.locator('#result-stdout').textContent();
     expect(stdout).toContain('[출력 제한(64 KiB)을 초과하여 이후 출력이 잘렸습니다]');
   });
+
+  test('7. Python 런타임(Origin: 5174)에서 Backend 변경 API 호출 시도 시 CSP 네트워크 차단이 동작한다 (B01)', async ({ page }) => {
+    // 1) Runtime iframe(5174) 컨텍스트에서 Backend 변경 API 호출 시도 (no-cors simple POST)
+    const fetchResult = await page.frameLocator('#python-runtime-frame').locator('body').evaluate(async () => {
+      try {
+        await fetch('http://127.0.0.1:8000/api/backups', {
+          method: 'POST',
+          mode: 'no-cors',
+        });
+        return 'allowed';
+      } catch (err: any) {
+        return 'blocked: ' + err.message;
+      }
+    });
+
+    // CSP connect-src 정책에 의해 브라우저에서 요청 자체가 사전 차단되어야 함
+    expect(fetchResult).toContain('blocked');
+    expect(fetchResult).toContain('Failed to fetch');
+  });
 });

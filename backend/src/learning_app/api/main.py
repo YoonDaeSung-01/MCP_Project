@@ -15,8 +15,9 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated, Any
 
-from fastapi import Body, Depends, FastAPI, HTTPException, Path as FastPath, Query, status
+from fastapi import Body, Depends, FastAPI, HTTPException, Path as FastPath, Query, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from learning_app.db.connection import open_connection
 from learning_app.db.migrator import apply_migrations
@@ -60,10 +61,9 @@ def get_backup_dir() -> Path:
 
 
 def get_db_connection() -> Generator[sqlite3.Connection, None, None]:
-    """SQLite 데이터베이스 연결을 생성하고 반환한다 (마이그레이션 자동 적용)."""
+    """SQLite 데이터베이스 연결을 생성하고 반환한다."""
     db_path = get_db_path()
     conn = open_connection(db_path)
-    apply_migrations(conn)
     try:
         yield conn
     finally:
@@ -138,11 +138,63 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+ALLOWED_ORIGINS = {
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
+}
+FORBIDDEN_ORIGINS = {
+    "http://127.0.0.1:5174",
+    "http://localhost:5174",
+}
+MUTATING_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
+
+
+@app.middleware("http")
+async def validate_origin_and_csrf(request: Request, call_next):
+    """HTTP 변경 요청(POST, PUT, PATCH, DELETE)의 Origin 및 CSRF 검증 (B01).
+
+    ARCHITECTURE.md §11, §13 및 PRD NF-02, FR-09 준수:
+    - Runtime Origin(5174) 등 허용되지 않은 Origin에서의 변경 요청 차단 (403 Forbidden)
+    - simple POST 및 no-cors 요청을 통한 무단 Backup 생성 및 데이터 변조 방지
+    """
+    if request.method in MUTATING_METHODS:
+        origin = request.headers.get("origin")
+        # 1. 런타임 Origin(5174) 등 명시적 금지 출처 차단
+        if origin in FORBIDDEN_ORIGINS:
+            return JSONResponse(
+                status_code=status.HTTP_403_FORBIDDEN,
+                content={
+                    "code": "permission_denied",
+                    "message": f"허용되지 않은 Origin({origin})에서의 변경 요청이다.",
+                },
+            )
+        # 2. Origin 헤더가 존재하지만 허용 목록에 없는 경우 차단 (CORS simple POST 및 no-cors 방어)
+        if origin and origin not in ALLOWED_ORIGINS:
+            return JSONResponse(
+                status_code=status.HTTP_403_FORBIDDEN,
+                content={
+                    "code": "permission_denied",
+                    "message": f"허용되지 않은 Origin({origin})에서의 변경 요청이다.",
+                },
+            )
+        # 3. Sec-Fetch-Site가 cross-site이면서 허용되지 않은 출처인 경우 차단
+        sec_fetch_site = request.headers.get("sec-fetch-site")
+        if sec_fetch_site == "cross-site" and (not origin or origin not in ALLOWED_ORIGINS):
+            return JSONResponse(
+                status_code=status.HTTP_403_FORBIDDEN,
+                content={
+                    "code": "permission_denied",
+                    "message": "교차 출처(cross-site)에서의 변경 요청은 허용되지 않는다.",
+                },
+            )
+    return await call_next(request)
+
 
 def _handle_wiki_error(exc: WikiError) -> HTTPException:
     status_map = {
         WikiErrorCode.VALIDATION_ERROR: status.HTTP_400_BAD_REQUEST,
         WikiErrorCode.NOT_FOUND: status.HTTP_404_NOT_FOUND,
+        WikiErrorCode.CONFLICT: status.HTTP_409_CONFLICT,
         WikiErrorCode.PERMISSION_DENIED: status.HTTP_403_FORBIDDEN,
         WikiErrorCode.SOURCE_CHANGED: status.HTTP_409_CONFLICT,
         WikiErrorCode.READ_ERROR: status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -467,8 +519,15 @@ async def restore_backup(
     filename: str = Body(..., embed=True),
     service: Annotated[BackupService, Depends(get_backup_service)] = None,  # type: ignore
 ) -> dict[str, str]:
-    try:
-        service.restore_backup(filename)
-        return {"status": "ok", "message": f"성공적으로 복원되었습니다: {filename}"}
-    except WikiError as exc:
-        raise _handle_wiki_error(exc) from exc
+    """백업 복원 요청을 처리한다.
+
+    ARCHITECTURE.md §13, PRD FR-20 준수:
+    - 데이터베이스 복원은 서버(App)가 완전히 종료된 상태에서 오프라인으로만 수행해야 한다.
+    - 실행 중인 Backend에서 라이브 복원을 시도하면 충돌(409 Conflict) 오류를 반환하여 데이터 손상을 방지한다.
+    """
+    raise _handle_wiki_error(
+        WikiError(
+            WikiErrorCode.CONFLICT,
+            "데이터베이스 복원은 서버가 종료된 상태에서 오프라인으로 수행해야 한다 (ARCHITECTURE §13, PRD FR-20)",
+        )
+    )

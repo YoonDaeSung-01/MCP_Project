@@ -14,6 +14,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import Any
 
+from learning_app.db.connection import transaction
 from learning_app.db.models import (
     SessionCreate,
     SessionDTO,
@@ -33,7 +34,7 @@ class SessionService:
         now_str = datetime.now(UTC).isoformat()
         ctx_json = json.dumps(data.active_context, ensure_ascii=False)
 
-        with self._conn:
+        with transaction(self._conn):
             self._conn.execute(
                 """
                 INSERT INTO sessions (session_id, title, active_context, created_at, updated_at)
@@ -93,7 +94,7 @@ class SessionService:
         now_str = datetime.now(UTC).isoformat()
         ctx_json = json.dumps(active_context, ensure_ascii=False)
 
-        with self._conn:
+        with transaction(self._conn):
             cursor = self._conn.execute(
                 "UPDATE sessions SET active_context = ?, updated_at = ? WHERE session_id = ?;",
                 (ctx_json, now_str, session_id),
@@ -111,7 +112,7 @@ class SessionService:
         now_str = datetime.now(UTC).isoformat()
         tool_calls_json = json.dumps(data.tool_calls, ensure_ascii=False) if data.tool_calls else None
 
-        with self._conn:
+        with transaction(self._conn):
             self._conn.execute(
                 """
                 INSERT INTO turns (turn_id, session_id, role, content, status, tool_calls, created_at)
@@ -156,7 +157,7 @@ class SessionService:
 
     def delete_session(self, session_id: str) -> None:
         """Session을 삭제한다 (외래키 제약으로 하위 Turn 자동 삭제)."""
-        with self._conn:
+        with transaction(self._conn):
             cursor = self._conn.execute("DELETE FROM sessions WHERE session_id = ?;", (session_id,))
             if cursor.rowcount == 0:
                 raise WikiError(WikiErrorCode.NOT_FOUND, f"삭제할 Session이 없다: {session_id}")

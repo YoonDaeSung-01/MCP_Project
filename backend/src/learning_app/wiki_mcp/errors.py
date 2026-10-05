@@ -8,6 +8,7 @@ from enum import StrEnum
 class WikiErrorCode(StrEnum):
     VALIDATION_ERROR = "validation_error"
     NOT_FOUND = "not_found"
+    CONFLICT = "conflict"
     SOURCE_CHANGED = "source_changed"
     PERMISSION_DENIED = "permission_denied"
     READ_ERROR = "read_error"

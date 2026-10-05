@@ -141,3 +141,18 @@ def test_api_backup_create_and_list(storage_app: TestClient) -> None:
     list_res = storage_app.get("/api/backups")
     assert list_res.status_code == 200
     assert len(list_res.json()) >= 1
+
+
+def test_api_restore_rejected_while_backend_running(storage_app: TestClient) -> None:
+    """B03: 실행 중인 Backend에 대한 Restore API 요청은 App 종료 조건을 강제하여 409 Conflict로 거부된다."""
+    # 1. 백업 생성
+    b_res = storage_app.post("/api/backups")
+    assert b_res.status_code == 201
+    filename = b_res.json()["filename"]
+
+    # 2. 실행 중인 상태에서 Restore 시도 -> 409 Conflict
+    res = storage_app.post("/api/backups/restore", json={"filename": filename})
+    assert res.status_code == 409
+    err = res.json()["detail"]
+    assert err["code"] == "conflict"
+    assert "서버가 종료된 상태에서 오프라인으로 수행해야 한다" in err["message"]

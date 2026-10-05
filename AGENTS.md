@@ -5,9 +5,9 @@
 
 ## 1. 현재 단계
 
-현재 단계는 R0(기술 경계 검증)의 순서 4(Pyodide의 별도 Origin 실행 영역을 검증한다)를 마친 상태다.
-별도 Origin(127.0.0.1:5174) iframe과 Pyodide Web Worker 격리, 3초 타임아웃, 64 KiB 출력 제한, 사용자 출력/Test Case 분리 및 관련 검증(Playwright 6개 E2E 테스트 통과)을 완료했다.
-다음 작업은 docs/PROJECT_PLAN.md §6의 구현 순서 5(Gemini Adapter와 공통 Harness 연결)를 따른다.
+현재 단계는 R0(기술 경계 검증)의 순서 4(Pyodide의 별도 Origin 실행 영역을 검증한다) 및 기존 구현 보완(B01–B04 추가 Fixture 수정)을 진행한 상태다.
+별도 Origin(127.0.0.1:5174) iframe과 Pyodide Web Worker 격리, CSP/Origin 검증을 통한 Backend 변경 차단(B01), 필수 외래 키 정의 및 정합성 검증(B02), WAL 최신 데이터 보존 롤백 및 App 종료 상태의 Restore 실행 계약 강제(B03), 즉시 트랜잭션 기반 동시 쓰기 및 마이그레이션 SQL·버전 기록의 원자적 커밋/롤백(B04)을 구현하고 관련 검증(Backend 116개 pytest, Playwright 7개 E2E 테스트 통과)을 마쳤다.
+BlockNote Round-trip 복원은 R0 미검증 기술 경계(docs/PROJECT_PLAN.md §5 라인 92)로 유지하며, 성급하게 Gemini 연결 준비 완료로 단정하지 않는다.
 R0의 경계 검증 없이 R1 기능을 먼저 구현하지 않는다.
 단계가 바뀌면 이 절과 README.md의 상태를 함께 수정한다.
 
@@ -142,6 +142,29 @@ Code를 작성하거나 수정할 때 읽기 쉽고 이해하기 쉽도록 설�
 Module, Class, Function의 목적, Argument, Return 값과 예외 조건을 명시한다.
 복잡한 Logic, 분기 조건, 상태 변경 이유와 경계값 처리 의도를 상세히 설명한다.
 Code 동작을 단순히 반복하는 주석 대신 설계 의도와 판단 근거를 적는다.
+
+### 7.7 핵심 개발 원칙 (Karpathy 원칙)
+
+Code를 구현하거나 수정할 때 Andrej Karpathy의 4대 AI Pair Programming 원칙을 따른다.
+
+1. **Think Before Coding (코딩 전 명확한 사고)**
+   - 암묵적 가정(Silent Assumption)으로 구현을 시작하지 않는다.
+   - 구현 전에 가정과 Trade-off를 먼저 명시한다.
+   - 요구사항이 모호하거나 여러 해석이 가능하면 임의로 진행하지 않고 질문하여 확인한다. (AGENTS §7.2 준수)
+
+2. **Simplicity First (단순성 최우선 - YAGNI)**
+   - 현재 문제를 해결하는 가장 작고 명료한 Code를 작성한다.
+   - 요청받지 않은 가상의 미래 확장성, 불필요한 유연성과 과도한 추상화 계층을 추가하지 않는다.
+
+3. **Surgical Changes (수술적 변경 - 최소 개입)**
+   - 요청된 목적에 직접 필요한 Code만 정확하게 변경한다.
+   - 요청받지 않은 인접 Code 리팩토링, Code 정리(Dead Code 삭제 등)와 Formatting 변경을 임의로 수행하지 않는다.
+   - 변경된 모든 줄은 사용자 요청이나 Bug 수정 사유로 직접 역추적 가능해야 한다.
+
+4. **Goal-Driven Execution (목표 주도 실행 - 닫힌 검증 루프)**
+   - 모호한 작업을 검증 가능한 성공 기준으로 먼저 정의한다.
+   - 문제를 해결했다고 추정하지 않고, 실패 사례/재현 Test 또는 실제 명령 실행 검증을 완료할 때까지 Loop를 완주한다. (AGENTS §7.3, §7.5 준수)
+
 
 ## 8. 완료 보고
 

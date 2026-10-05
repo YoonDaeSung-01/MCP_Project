@@ -13,10 +13,14 @@ function runtimeServerPlugin(): Plugin {
       const runtimeDir = path.resolve(__dirname, 'runtime');
 
       runtimeServer = http.createServer((req, res) => {
-        // Cross-Origin 격리를 위해 App API 등에 대한 허용 헤더 배제
+        // Cross-Origin 격리 및 Python Worker 네트워크 접근 제한 (B01)
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
         res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+        res.setHeader(
+          'Content-Security-Policy',
+          "default-src 'none'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net; connect-src https://cdn.jsdelivr.net; worker-src 'self' blob:; style-src 'unsafe-inline';"
+        );
 
         const parsedUrl = new URL(req.url || '/', 'http://127.0.0.1:5174');
         let filePath = path.join(runtimeDir, parsedUrl.pathname === '/' ? 'index.html' : parsedUrl.pathname);
@@ -58,6 +62,15 @@ function runtimeServerPlugin(): Plugin {
     configurePreviewServer(server) {
       const runtimeDir = path.resolve(__dirname, 'runtime');
       runtimeServer = http.createServer((req, res) => {
+        // Cross-Origin 격리 및 Python Worker 네트워크 접근 제한 (B01)
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+        res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+        res.setHeader(
+          'Content-Security-Policy',
+          "default-src 'none'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net; connect-src https://cdn.jsdelivr.net; worker-src 'self' blob:; style-src 'unsafe-inline';"
+        );
+
         const parsedUrl = new URL(req.url || '/', 'http://127.0.0.1:5174');
         let filePath = path.join(runtimeDir, parsedUrl.pathname === '/' ? 'index.html' : parsedUrl.pathname);
 

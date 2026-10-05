@@ -15,6 +15,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import Any
 
+from learning_app.db.connection import transaction
 from learning_app.db.models import PageCreate, PageDTO, PageUpdate
 from learning_app.services.idempotency import execute_with_idempotency
 from learning_app.wiki_mcp.errors import WikiError, WikiErrorCode
@@ -51,7 +52,7 @@ class PageService:
                 "updated_at": now_str,
             }
 
-        with self._conn:
+        with transaction(self._conn):
             res = execute_with_idempotency(self._conn, data.request_id, payload, _execute)
         return PageDTO.model_validate(res)
 
@@ -132,13 +133,13 @@ class PageService:
                 "updated_at": now_str,
             }
 
-        with self._conn:
+        with transaction(self._conn):
             res = execute_with_idempotency(self._conn, data.request_id, payload, _execute)
         return PageDTO.model_validate(res)
 
     def delete_page(self, page_id: str) -> None:
         """Page를 삭제한다."""
-        with self._conn:
+        with transaction(self._conn):
             cursor = self._conn.execute("DELETE FROM pages WHERE page_id = ?;", (page_id,))
             if cursor.rowcount == 0:
                 raise WikiError(WikiErrorCode.NOT_FOUND, f"삭제할 Page가 없다: {page_id}")

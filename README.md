@@ -13,9 +13,9 @@ Job Agent는 공고의 근거와 사용자가 명시한 경험을 연결한다.
 해당 기능은 설계 상태이며 아직 App에서 사용할 수 없다.
 세부 동작은 [PRD의 FR-22 및 FR-23](./docs/PRD.md#fr-22-공개-github-project-연결과-이해)을 따른다.
 
-상태: 2026-10-05 R0의 순서 4(Pyodide의 별도 Origin 실행 영역 검증)를 완료했다.
-별도 Origin(127.0.0.1:5174)의 iframe과 Pyodide Web Worker 격리, 3초 타임아웃 강제 중단 및 복구, 64 KiB 출력 제한, 사용자 출력/Test Case 분리 및 Cross-Origin 접근 차단을 구현하고 Playwright 6개 E2E 테스트를 통과했다.
-다음 작업은 R0 순서 5인 Gemini Adapter와 공통 Harness 연결이다.
+상태: 2026-10-05 R0의 순서 4(Pyodide의 별도 Origin 실행 영역 검증) 및 구현 보완(B01–B04 추가 Fixture 수정)을 진행했다.
+별도 Origin(127.0.0.1:5174)의 iframe과 Pyodide Web Worker 격리, 3초 타임아웃 강제 중단 및 복구, 64 KiB 출력 제한, 사용자 출력/Test Case 분리 및 Cross-Origin/CSP 접근 차단(B01), 필수 외래 키 정의 및 무결성 검증(B02), WAL 일관성 롤백 및 App 종료 상태의 Restore 실행 계약 강제(B03), 동시 저장 트랜잭션 및 마이그레이션 원자적 커밋/롤백(B04)을 구현하고 Backend 116개 pytest 및 Playwright 7개 E2E 테스트를 통과했다.
+BlockNote Round-trip 복원은 R0 미검증 기술 경계(docs/PROJECT_PLAN.md §5 라인 92)로 유지하며, Gemini Adapter 연결 전 기술 경계 검증을 단계적으로 진행한다.
 문서 Diagram의 생성은 App 구현과 별도로 관리한다.
 
 ## 문서 진입점
